@@ -10,7 +10,7 @@ CREATE TABLE `snake_node` (
   `typeid` int(11) NOT NULL COMMENT '父级节点id',
   `style` varchar(155) DEFAULT '' COMMENT '菜单样式',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('1','用户管理','#','#','#','2','0','fa fa-users');
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('2','用户列表','admin','user','index','2','1','');
@@ -30,3 +30,6 @@ insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_n
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('16','添加节点','admin','auth','authadd','1','15','');
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('17','编辑节点','admin','auth','authedit','1','15','');
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('18','删除节点','admin','auth','authdel','1','15','');
+insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('25','退出登陆','admin','login','loginout','2','11','');
+insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('26','系列号管理','#','#','#','2','0','fa fa-users');
+insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`) values('27','系列号列表','admin','serial','index','2','26','');
