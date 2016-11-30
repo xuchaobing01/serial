@@ -13,7 +13,7 @@ CREATE TABLE `snake_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`) values('1','admin','21232f297a57a5a743894a0e4a801fc3','58','127.0.0.1','1480505132','admin','1','1');
+insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`) values('1','admin','21232f297a57a5a743894a0e4a801fc3','62','127.0.0.1','1480515897','admin','1','1');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`) values('2','xiaobai','e10adc3949ba59abbe56e057f20f883e','7','127.0.0.1','1480483521','小白','1','2');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`) values('3','xuchaobing','c18d65c8abed9fc4028365a00422f2e1','1','127.0.0.1','1477361836','朝兵','1','3');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`) values('4','zhangsan','21232f297a57a5a743894a0e4a801fc3','32','127.0.0.1','1477365248','zhangsan','1','2');
