@@ -27,7 +27,7 @@ class Serial extends Base
 
             $where = [];
             if (isset($param['searchText']) && !empty($param['searchText'])) {
-                $where['username'] = ['like', '%' . $param['searchText'] . '%'];
+                $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
             }
             $user = new UserModel();
             $selectResult = $user->getUsersByWhere($where, $offset, $limit);
