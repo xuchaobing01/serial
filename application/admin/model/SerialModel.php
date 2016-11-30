@@ -12,7 +12,7 @@ namespace app\admin\model;
 
 use think\Model;
 
-class Serial extends Model
+class SerialModel extends Model
 {
     protected $table = 'snake_serial';
 
@@ -42,11 +42,11 @@ class Serial extends Model
      * 插入系列号
      * @param $param
      */
-    public function insertSerial($param)
+    public function insertSerials($param)
     {
         try {
 
-            $result = $this->validate('UserValidate')->save($param);
+            $result = $this->saveAll($param);
             if (false === $result) {
                 // 验证失败 输出错误信息
                 return ['code' => -1, 'data' => '', 'msg' => $this->getError()];
@@ -64,11 +64,12 @@ class Serial extends Model
      * 编辑管理员信息
      * @param $param
      */
-    public function editUser($param)
+    public function editSerial($param)
     {
         try {
 
-            $result = $this->validate('UserValidate')->save($param, ['id' => $param['id']]);
+            //$result = $this->validate('UserValidate')->save($param, ['id' => $param['id']]);
+            $result = $this->save($param, ['id' => $param['id']]);
 
             if (false === $result) {
                 // 验证失败 输出错误信息
@@ -83,19 +84,19 @@ class Serial extends Model
     }
 
     /**
-     * 根据管理员id获取角色信息
+     * 根据id获取系列号信息
      * @param $id
      */
-    public function getOneUser($id)
+    public function getOneSerial($id)
     {
         return $this->where('id', $id)->find();
     }
 
     /**
-     * 删除管理员
+     * 删除序列号
      * @param $id
      */
-    public function delUser($id)
+    public function delSerial($id)
     {
         try {
 
@@ -105,5 +106,42 @@ class Serial extends Model
         } catch (PDOException $e) {
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 生成序列号
+     * @param  $numbers 生成数量
+     * @param  $length 系列号长度
+     * @return  $serialArr 返回数组
+     */
+    public function createSerial($numbers, $length = 12)
+    {
+
+        $str       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $serialArr = array();
+        for ($i = 0; $i < $numbers; $i++) {
+            $serial = $_SESSION['think']['id'];
+            $serial .= substr(str_shuffle($str), 0, $length);
+            $serialArr[]['serial'] = $serial;
+        }
+
+        return $serialArr;
+    }
+    /**
+     * 补充完善数据
+     * @param  [array]   $serialArr 序列号数组
+     * @param  [int]     $times     序列号可以使用次数
+     * @return [array]              返回数组
+     */
+    public function completeSerialArr($serialArr, $times)
+    {
+        foreach ($serialArr as $k => $v) {
+            $serialArr[$k]['can_use_num'] = $times;
+            $serialArr[$k]['surplus_num'] = $times;
+            $serialArr[$k]['createtime']  = time();
+            $serialArr[$k]['userid']      = $_SESSION['think']['id'];
+        }
+
+        return $serialArr;
     }
 }

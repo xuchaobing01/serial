@@ -11,40 +11,40 @@
 // $Id$
 
 return [
-    'url_route_on' => true,
-    'trace' => [
+    'url_route_on'      => true,
+    'trace'             => [
         'type' => 'html', // 支持 socket trace file
     ],
     //各模块公用配置
     'extra_config_list' => ['database', 'route', 'validate'],
     //临时关闭日志写入
-    'log' => [
+    'log'               => [
         'type' => 'test',
     ],
 
-    'app_debug' => true,
-    'default_filter' => ['strip_tags', 'htmlspecialchars'],
+    'app_debug'         => true,
+    'default_filter'    => ['strip_tags', 'htmlspecialchars'],
 
     // +----------------------------------------------------------------------
     // | 缓存设置
     // +----------------------------------------------------------------------
-    'cache' => [
+    'cache'             => [
         // 驱动方式
-        'type' => 'file',
+        'type'   => 'file',
         // 缓存保存目录
-        'path' => CACHE_PATH,
+        'path'   => CACHE_PATH,
         // 缓存前缀
         'prefix' => '',
         // 缓存有效期 0表示永久缓存
         'expire' => 0,
-        'host' => '192.168.6.55',
-        'port' => 11211,
+        'host'   => '192.168.6.55',
+        'port'   => 11211,
     ],
 
     //加密串
-    'salt' => 'wZPb~yxvA!ir38&Z',
+    'salt'              => 'wZPb~yxvA!ir38&Z',
 
     //备份数据地址
-    'back_path' => APP_PATH . '../back/',
+    'back_path'         => APP_PATH . '../back/',
 
 ];

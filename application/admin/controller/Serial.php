@@ -10,25 +10,27 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
+use app\admin\model\SerialModel;
+
 //use app\admin\model\UserType;
 
 class Serial extends Base
 {
-    //用户列表
+    //系列号列表
     public function index()
     {
         if (request()->isAjax()) {
 
             $param = input('param.');
 
-            $limit = $param['pageSize'];
+            $limit  = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
             }
-            $serial = new SerialModel();
+            $serial       = new SerialModel();
             $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
             $status = config('serial_status');
@@ -44,8 +46,8 @@ class Serial extends Base
                 }
 
                 $operate = [
-                    '编辑' => url('user/userEdit', ['id' => $vo['id']]),
-                    '删除' => "javascript:userDel('" . $vo['id'] . "')",
+                    '编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
+                    '删除' => "javascript:serialDel('" . $vo['id'] . "')",
                 ];
 
                 $selectResult[$key]['operate'] = showOperate($operate);
@@ -53,7 +55,7 @@ class Serial extends Base
             }
 
             $return['total'] = $serial->getAllSerials($where); //总数据
-            $return['rows'] = $selectResult;
+            $return['rows']  = $selectResult;
 
             return json($return);
         }
@@ -61,66 +63,58 @@ class Serial extends Base
         return $this->fetch();
     }
 
-    //添加用户
-    public function userAdd()
+    //系列号生成
+    public function serialAdd()
     {
         if (request()->isPost()) {
 
             $param = input('param.');
             $param = parseParams($param['data']);
 
-            $param['password'] = md5($param['password']);
-            $user = new UserModel();
-            $flag = $user->insertUser($param);
+            $userid    = $_SESSION['think']['id'];
+            $serial    = new SerialModel();
+            $serialArr = $serial->createSerial($param['number']);
+            $serialArr = $serial->completeSerialArr($serialArr, $param['times']);
+
+            $flag = $serial->insertSerials($serialArr);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $role = new UserType();
-        $this->assign([
-            'role' => $role->getRole(),
-            'status' => config('user_status'),
-        ]);
-
         return $this->fetch();
     }
 
-    //编辑角色
-    public function userEdit()
+    //编辑序列号
+    public function serialEdit()
     {
-        $user = new UserModel();
+        $serial = new SerialModel();
 
         if (request()->isPost()) {
 
             $param = input('post.');
             $param = parseParams($param['data']);
-            if (empty($param['password'])) {
-                unset($param['password']);
-            } else {
-                $param['password'] = md5($param['password']);
-            }
-            $flag = $user->editUser($param);
+
+            $flag = $serial->editSerial($param);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
         $id = input('param.id');
-        $role = new UserType();
         $this->assign([
-            'user' => $user->getOneUser($id),
-            'status' => config('user_status'),
-            'role' => $role->getRole(),
+            'serial' => $serial->getOneSerial($id),
+            'status' => config('serial_status'),
         ]);
         return $this->fetch();
     }
 
-    //删除角色
-    public function UserDel()
+    //删除系列号
+    public function serialDel()
     {
         $id = input('param.id');
 
-        $role = new UserModel();
-        $flag = $role->delUser($id);
+        $serial = new SerialModel();
+
+        $flag = $serial->delSerial($id);
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
 }

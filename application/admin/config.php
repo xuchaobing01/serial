@@ -14,28 +14,29 @@ return [
     //模板参数替换
     'view_replace_str' => array(
         '__CSS__' => '/static/admin/css',
-        '__JS__' => '/static/admin/js',
+        '__JS__'  => '/static/admin/js',
         '__IMG__' => '/static/admin/images',
     ),
 
     //管理员状态
-    'user_status' => [
+    'user_status'      => [
         '1' => '正常',
         '2' => '禁止登录',
     ],
     //角色状态
-    'role_status' => [
+    'role_status'      => [
         '1' => '启用',
         '2' => '禁用',
     ],
     //菜单还是按钮
-    'authtype' => [
+    'authtype'         => [
         '1' => '按钮',
         '2' => '菜单',
     ],
     //系列化状态
-    'serial_status' => [
+    'serial_status'    => [
         '1' => '有效',
         '2' => '失效',
     ],
+
 ];

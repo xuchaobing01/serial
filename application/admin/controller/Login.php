@@ -25,6 +25,7 @@ class Login extends Controller
     //登录操作
     public function doLogin()
     {
+
         $username = input("param.username");
         $password = input("param.password");
         $code     = input("param.code");
