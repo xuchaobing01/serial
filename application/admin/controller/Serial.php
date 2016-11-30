@@ -10,7 +10,6 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-//use app\admin\model\UserModel;
 //use app\admin\model\UserType;
 
 class Serial extends Base
@@ -29,14 +28,14 @@ class Serial extends Base
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
             }
-            $user = new UserModel();
-            $selectResult = $user->getUsersByWhere($where, $offset, $limit);
+            $serial = new SerialModel();
+            $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
-            $status = config('user_status');
+            $status = config('serial_status');
 
             foreach ($selectResult as $key => $vo) {
 
-                $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
+                $selectResult[$key]['createtime'] = date('Y-m-d H:i:s', $vo['createtime']);
 
                 if ($vo['status'] == 1) {
                     $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
@@ -51,12 +50,9 @@ class Serial extends Base
 
                 $selectResult[$key]['operate'] = showOperate($operate);
 
-                if (1 == $vo['id']) {
-                    $selectResult[$key]['operate'] = '';
-                }
             }
 
-            $return['total'] = $user->getAllUsers($where); //总数据
+            $return['total'] = $serial->getAllSerials($where); //总数据
             $return['rows'] = $selectResult;
 
             return json($return);
