@@ -8,5 +8,5 @@ CREATE TABLE `snake_role` (
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 insert into `snake_role`(`id`,`rolename`,`rule`) values('1','超级管理员','');
-insert into `snake_role`(`id`,`rolename`,`rule`) values('2','系统维护员','1,2,3,4,5,6,7,8,9,10');
-insert into `snake_role`(`id`,`rolename`,`rule`) values('3','新闻发布员','1,2,3,22');
+insert into `snake_role`(`id`,`rolename`,`rule`) values('2','管理员组','26,27,28,29,30,1,15,16,17,18,2,3,4,5,6,7,8,11,24,12,14,13,25');
+insert into `snake_role`(`id`,`rolename`,`rule`) values('3','合作商组','26,27,28,29,30,11,24,25');
