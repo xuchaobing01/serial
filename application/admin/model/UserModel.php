@@ -128,4 +128,22 @@ class UserModel extends Model
         }
     }
 
+    public function editPWD($param)
+    {
+        try {
+
+            $result = $this->save($param, ['id' => $_SESSION['think']['id']]);
+
+            if (false === $result) {
+                // 验证失败 输出错误信息
+                return ['code' => 0, 'data' => '', 'msg' => $this->getError()];
+            } else {
+
+                return ['code' => 1, 'data' => '', 'msg' => '修改密码成功!'];
+            }
+        } catch (PDOException $e) {
+            return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
+        }
+    }
+
 }

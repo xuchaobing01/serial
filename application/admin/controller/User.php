@@ -22,14 +22,14 @@ class User extends Base
 
             $param = input('param.');
 
-            $limit = $param['pageSize'];
+            $limit  = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['username'] = ['like', '%' . $param['searchText'] . '%'];
             }
-            $user = new UserModel();
+            $user         = new UserModel();
             $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
             $status = config('user_status');
@@ -59,7 +59,7 @@ class User extends Base
             }
 
             $return['total'] = $user->getAllUsers($where); //总数据
-            $return['rows'] = $selectResult;
+            $return['rows']  = $selectResult;
 
             return json($return);
         }
@@ -76,15 +76,15 @@ class User extends Base
             $param = parseParams($param['data']);
 
             $param['password'] = md5($param['password']);
-            $user = new UserModel();
-            $flag = $user->insertUser($param);
+            $user              = new UserModel();
+            $flag              = $user->insertUser($param);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
         $role = new UserType();
         $this->assign([
-            'role' => $role->getRole(),
+            'role'   => $role->getRole(),
             'status' => config('user_status'),
         ]);
 
@@ -110,12 +110,12 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $id = input('param.id');
+        $id   = input('param.id');
         $role = new UserType();
         $this->assign([
-            'user' => $user->getOneUser($id),
+            'user'   => $user->getOneUser($id),
             'status' => config('user_status'),
-            'role' => $role->getRole(),
+            'role'   => $role->getRole(),
         ]);
         return $this->fetch();
     }
@@ -142,26 +142,20 @@ class User extends Base
             $param = parseParams($param['data']);
 
             if (empty($param['password']) || empty($param['comfirm_password'])) {
-                return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
+                return json(['code' => 0, 'data' => '', 'msg' => '密码不能为空！']);
             }
             if ($param['password'] != $param['comfirm_password']) {
-                return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
+                return json(['code' => 0, 'data' => '', 'msg' => '两次密码不一致！']);
             }
-
+            unset($param['comfirm_password']);
             $param['password'] = md5($param['password']);
 
             $flag = $user->editPWD($param);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
+        $this->assign('username', $_SESSION['think']['username']);
 
-        $id = input('param.id');
-        $role = new UserType();
-        $this->assign([
-            'user' => $user->getOneUser($id),
-            'status' => config('user_status'),
-            'role' => $role->getRole(),
-        ]);
         return $this->fetch();
     }
 }
