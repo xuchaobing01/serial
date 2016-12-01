@@ -11,8 +11,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\SerialModel;
-
-//use app\admin\model\UserType;
+use app\admin\model\UserModel;
 
 class Serial extends Base
 {
@@ -23,14 +22,14 @@ class Serial extends Base
 
             $param = input('param.');
 
-            $limit  = $param['pageSize'];
+            $limit = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
             }
-            $serial       = new SerialModel();
+            $serial = new SerialModel();
             $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
             $status = config('serial_status');
@@ -55,7 +54,7 @@ class Serial extends Base
             }
 
             $return['total'] = $serial->getAllSerials($where); //总数据
-            $return['rows']  = $selectResult;
+            $return['rows'] = $selectResult;
 
             return json($return);
         }
@@ -71,12 +70,15 @@ class Serial extends Base
             $param = input('param.');
             $param = parseParams($param['data']);
 
-            $userid    = $_SESSION['think']['id'];
-            $serial    = new SerialModel();
+            $userid = $_SESSION['think']['id'];
+            $serial = new SerialModel();
             $serialArr = $serial->createSerial($param['number']);
             $serialArr = $serial->completeSerialArr($serialArr, $param['times']);
 
             $flag = $serial->insertSerials($serialArr);
+
+            $user = new UserModel();
+            $user->updateSerialNum($param['number']);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }

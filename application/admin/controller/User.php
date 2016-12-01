@@ -38,6 +38,8 @@ class User extends Base
 
                 $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
 
+                $selectResult[$key]['serialnum'] = '<span class="label label-warning">' . $vo['serialnum'] . '</span>';
+
                 if ($vo['status'] == 1) {
                     $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
                 } else {

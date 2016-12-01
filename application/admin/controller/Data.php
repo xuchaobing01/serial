@@ -85,6 +85,7 @@ class Data extends Base
 
         $sqls = analysisSql(config('back_path') . $table . ".sql");
         foreach ($sqls as $key => $sql) {
+            //echo $sql;
             db()->query($sql);
         }
         return json(['code' => 1, 'data' => '', 'msg' => 'success']);

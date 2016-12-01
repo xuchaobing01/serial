@@ -44,17 +44,17 @@ class UserModel extends Model
      */
     public function insertUser($param)
     {
-        try{
+        try {
 
-            $result =  $this->validate('UserValidate')->save($param);
-            if(false === $result){
+            $result = $this->validate('UserValidate')->save($param);
+            if (false === $result) {
                 // 验证失败 输出错误信息
                 return ['code' => -1, 'data' => '', 'msg' => $this->getError()];
-            }else{
+            } else {
 
                 return ['code' => 1, 'data' => '', 'msg' => '添加用户成功'];
             }
-        }catch( PDOException $e){
+        } catch (PDOException $e) {
 
             return ['code' => -2, 'data' => '', 'msg' => $e->getMessage()];
         }
@@ -66,18 +66,18 @@ class UserModel extends Model
      */
     public function editUser($param)
     {
-        try{
+        try {
 
-            $result =  $this->validate('UserValidate')->save($param, ['id' => $param['id']]);
+            $result = $this->validate('UserValidate')->save($param, ['id' => $param['id']]);
 
-            if(false === $result){
+            if (false === $result) {
                 // 验证失败 输出错误信息
                 return ['code' => 0, 'data' => '', 'msg' => $this->getError()];
-            }else{
+            } else {
 
                 return ['code' => 1, 'data' => '', 'msg' => '编辑用户成功'];
             }
-        }catch( PDOException $e){
+        } catch (PDOException $e) {
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
         }
     }
@@ -97,12 +97,30 @@ class UserModel extends Model
      */
     public function delUser($id)
     {
-        try{
+        try {
 
             $this->where('id', $id)->delete();
             return ['code' => 1, 'data' => '', 'msg' => '删除管理员成功'];
 
-        }catch( PDOException $e){
+        } catch (PDOException $e) {
+            return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
+        }
+    }
+    public function updateSerialNum($num)
+    {
+
+        try {
+
+            $result = $this->where('id', $_SESSION['think']['id'])->setInc('serialnum', $num);
+
+            if (false === $result) {
+                // 验证失败 输出错误信息
+                return ['code' => 0, 'data' => '', 'msg' => $this->getError()];
+            } else {
+
+                return ['code' => 1, 'data' => '', 'msg' => '更新数据成功！'];
+            }
+        } catch (PDOException $e) {
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
         }
     }
