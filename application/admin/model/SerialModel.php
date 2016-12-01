@@ -52,7 +52,7 @@ class SerialModel extends Model
                 return ['code' => -1, 'data' => '', 'msg' => $this->getError()];
             } else {
 
-                return ['code' => 1, 'data' => '', 'msg' => '添加用户成功'];
+                return ['code' => 1, 'data' => '', 'msg' => '序列号生成成功'];
             }
         } catch (PDOException $e) {
 
@@ -76,7 +76,7 @@ class SerialModel extends Model
                 return ['code' => 0, 'data' => '', 'msg' => $this->getError()];
             } else {
 
-                return ['code' => 1, 'data' => '', 'msg' => '编辑用户成功'];
+                return ['code' => 1, 'data' => '', 'msg' => '编辑系列号成功'];
             }
         } catch (PDOException $e) {
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
@@ -101,7 +101,7 @@ class SerialModel extends Model
         try {
 
             $this->where('id', $id)->delete();
-            return ['code' => 1, 'data' => '', 'msg' => '删除管理员成功'];
+            return ['code' => 1, 'data' => '', 'msg' => '删除系列号成功'];
 
         } catch (PDOException $e) {
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];

@@ -129,4 +129,39 @@ class User extends Base
         $flag = $role->delUser($id);
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
+    /**
+     * 修改密码
+     */
+    public function editPWD()
+    {
+        $user = new UserModel();
+
+        if (request()->isPost()) {
+
+            $param = input('post.');
+            $param = parseParams($param['data']);
+
+            if (empty($param['password']) || empty($param['comfirm_password'])) {
+                return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
+            }
+            if ($param['password'] != $param['comfirm_password']) {
+                return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
+            }
+
+            $param['password'] = md5($param['password']);
+
+            $flag = $user->editPWD($param);
+
+            return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
+        }
+
+        $id = input('param.id');
+        $role = new UserType();
+        $this->assign([
+            'user' => $user->getOneUser($id),
+            'status' => config('user_status'),
+            'role' => $role->getRole(),
+        ]);
+        return $this->fetch();
+    }
 }

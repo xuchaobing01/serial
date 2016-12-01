@@ -29,6 +29,11 @@ class Serial extends Base
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
             }
+
+            if ($_SESSION['think']['id'] != 1) {
+                $where['userid'] = $_SESSION['think']['id'];
+            }
+
             $serial = new SerialModel();
             $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
@@ -45,7 +50,7 @@ class Serial extends Base
                 }
 
                 $operate = [
-                    '编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
+                    //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
                     '删除' => "javascript:serialDel('" . $vo['id'] . "')",
                 ];
 
@@ -78,7 +83,10 @@ class Serial extends Base
             $flag = $serial->insertSerials($serialArr);
 
             $user = new UserModel();
-            $user->updateSerialNum($param['number']);
+            $num = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
+            $num = $num[0];
+            $num += $param['number'];
+            $user->updateSerialNum($num);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
@@ -117,6 +125,13 @@ class Serial extends Base
         $serial = new SerialModel();
 
         $flag = $serial->delSerial($id);
+
+        $user = new UserModel();
+        $num = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
+        $num = $num[0];
+        $number = ($num > 0) ? ($num - 1) : 0;
+        $user->updateSerialNum($number);
+
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
 }

@@ -106,12 +106,15 @@ class UserModel extends Model
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
         }
     }
+    /**
+     * 更新用户的系列号数量
+     */
     public function updateSerialNum($num)
     {
 
         try {
 
-            $result = $this->where('id', $_SESSION['think']['id'])->setInc('serialnum', $num);
+            $result = $this->save(['serialnum' => $num], ['id' => $_SESSION['think']['id']]);
 
             if (false === $result) {
                 // 验证失败 输出错误信息
@@ -124,4 +127,5 @@ class UserModel extends Model
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
         }
     }
+
 }
