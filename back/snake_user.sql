@@ -14,7 +14,7 @@ CREATE TABLE `snake_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('1','admin','21232f297a57a5a743894a0e4a801fc3','83','127.0.0.1','1480644138','admin','1','1','30');
+insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('1','admin','21232f297a57a5a743894a0e4a801fc3','88','127.0.0.1','1480654545','admin','1','1','30');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('2','xiaobai','e10adc3949ba59abbe56e057f20f883e','7','127.0.0.1','1480483521','小白','1','2','0');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('3','xuchaobing','c18d65c8abed9fc4028365a00422f2e1','1','127.0.0.1','1477361836','朝兵','1','3','0');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('4','zhangsan','21232f297a57a5a743894a0e4a801fc3','32','127.0.0.1','1477365248','zhangsan','1','2','0');
@@ -40,4 +40,4 @@ insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('24','wangwu','c18d65c8abed9fc4028365a00422f2e1','1','127.0.0.1','1477361836','wangwu','1','3','0');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('25','zhangsan','21232f297a57a5a743894a0e4a801fc3','32','127.0.0.1','1477365248','zhangsan','1','2','0');
 insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('27','wangwu1','c18d65c8abed9fc4028365a00422f2e1','1','127.0.0.1','1477361836','wangwu','2','3','0');
-insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('28','xiaoming','97304531204ef7431330c20427d95481','2','127.0.0.1','1480597947','小明','1','3','0');
+insert into `snake_user`(`id`,`username`,`password`,`loginnum`,`last_login_ip`,`last_login_time`,`real_name`,`status`,`typeid`,`serialnum`) values('28','xiaoming','97304531204ef7431330c20427d95481','5','127.0.0.1','1480654445','小明','1','2','0');
