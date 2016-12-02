@@ -14,20 +14,17 @@
 
 <body class="gray-bg">
     <div class="middle-box text-center animated fadeInDown">
-        <h1>serial</h1>
+        <h1>snake</h1>
+        <h3 class="font-bold">访问后台,请在地址后面加上 /admin</h3>
+
         <div class="error-desc">
-			<h3> 当前时间 : <span id="time" ></span> </h3> 
-			<!-- <h3> homepage : http://www.cnblogs.com/nickbai/ </h3>
-			<h3> email : 1902822973@qq.com </h3> -->
+             
+            <br/> 默认用户名 ：admin，密码 ： admin
+			<br/>
+			<br/>  author : NickBai , homepage : http://www.cnblogs.com/nickbai/ , email : 1902822973@qq.com
         </div>
     </div>
     <script src="/static/admin/js/jquery.min.js?v=2.1.4"></script>
     <script src="/static/admin/js/bootstrap.min.js?v=3.3.6"></script>
 </body>
-<script type="text/javascript">
-    setInterval(function() {
-        var now = (new Date()).toLocaleString();
-        $("#time").html(now)
-    }, 1000);
-</script>
 </html>

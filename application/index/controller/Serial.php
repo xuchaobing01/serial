@@ -16,18 +16,18 @@ class Serial extends Controller
      */
     public function checkSerial()
     {
-
+        header('Access-Control-Allow-Origin:*');
         $request = Request::instance();
-        $param   = $request->param();
+        $param = $request->param();
         if (!isset($param['serial']) || (isset($param['serial']) && empty($param['serial']))) {
             return json(['code' => 0, 'msg' => '验证失败']);
         }
 
-        $where['serial']      = $param['serial'];
+        $where['serial'] = $param['serial'];
         $where['surplus_num'] = ['>', '0'];
-        $where['status']      = 1;
-        $seiral               = new SerialModel();
-        $rs                   = $seiral->checkBySerial($where);
+        $where['status'] = 1;
+        $seiral = new SerialModel();
+        $rs = $seiral->checkBySerial($where);
 
         if ($rs > 0) {
             return json(['code' => 1, 'msg' => '可以使用']);
@@ -41,8 +41,9 @@ class Serial extends Controller
      */
     public function useSerial()
     {
+        header('Access-Control-Allow-Origin:*');
         $request = Request::instance();
-        $param   = $request->param();
+        $param = $request->param();
         if (!isset($param['serial']) || (isset($param['serial']) && empty($param['serial']))) {
             return json(['code' => 0, 'msg' => '验证失败']);
         }
@@ -51,19 +52,19 @@ class Serial extends Controller
 
         $where['serial'] = $param['serial'];
         $where['status'] = 1;
-        $rs              = $serial->field('used_num,surplus_num')->where($where)->find();
+        $rs = $serial->field('used_num,surplus_num')->where($where)->find();
         if (empty($rs)) {
             return json(['code' => 0, 'msg' => '系列号不可以使用']);
         }
 
-        $used_num    = $rs->used_num;
+        $used_num = $rs->used_num;
         $surplus_num = $rs->surplus_num;
         if ($surplus_num <= 0) {
             return json(['code' => 0, 'msg' => '系列号不可以使用']);
         }
 
-        $arr['serial']      = $param['serial'];
-        $arr['used_num']    = $used_num + 1;
+        $arr['serial'] = $param['serial'];
+        $arr['used_num'] = $used_num + 1;
         $arr['surplus_num'] = $surplus_num - 1;
         if ($arr['surplus_num'] == 0) {
             $arr['status'] = 2;

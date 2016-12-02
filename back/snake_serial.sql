@@ -13,7 +13,7 @@ CREATE TABLE `snake_serial` (
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('1','11CNE03WRFG7I','4','4','0','1480573435','2','1');
-insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('2','1GRYBWHD9VXCJ','20','0','20','1480573435','1','1');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('2','1GRYBWHD9VXCJ','20','4','16','1480573435','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('3','1K9P0ZJBM6QWD','20','0','20','1480573435','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('4','1DS4N3GF51C7T','20','0','20','1480573435','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('5','1K0FQO7B35RYX','20','0','20','1480573435','1','1');
