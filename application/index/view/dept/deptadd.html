@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>添加管理员</title>
+    <title>添加部门</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link href="/static/admin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
     <link href="/static/admin/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
@@ -19,7 +19,7 @@
         <div class="col-sm-8">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>添加管理员</h5>
+                    <h5>添加部门</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -36,43 +36,17 @@
                     <form class="form-horizontal m-t" id="commentForm" method="post" onsubmit="return toVaild()">
 
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">管理员名称：</label>
+                            <label class="col-sm-4 control-label">部门名称：</label>
                             <div class="input-group col-sm-4">
-                                <input id="username" type="text" class="form-control" name="username" required="" aria-required="true">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">管理员角色：</label>
-                            <div class="input-group col-sm-4">
-                                <select class="form-control" name="typeid" required="" aria-required="true">
-                                    <option value="0">--请选择--</option>
-                                    {if !empty($role)}
-                                    {foreach name="role" item="vo"}
-                                    <option value="{$vo.id}">{$vo.rolename}</option>
-                                    {/foreach}
-                                    {/if}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">登录密码：</label>
-                            <div class="input-group col-sm-4">
-                                <input id="password" type="text" class="form-control" name="password" required="" aria-required="true">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">真是姓名：</label>
-                            <div class="input-group col-sm-4">
-                                <input id="real_name" type="text" class="form-control" name="real_name" required="" aria-required="true">
-
+                                <input id="deptname" type="text" class="form-control" name="deptname" required="" aria-required="true">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">部门：</label>
+                            <label class="col-sm-4 control-label">上级部门：</label>
                             <div class="input-group col-sm-4">
-                                <select class="form-control" id="dept1" >
-                                    <option value="0">--请选择--</option>
+                                <select class="form-control" name="pid" required="" aria-required="true">
+                                    <option value="0">顶级部门</option>
                                     {if !empty($dept)}
                                     {foreach name="dept" item="vo"}
                                     <option value="{$vo.id}">{$vo.deptname}</option>
@@ -83,25 +57,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">所属用户：</label>
-                            <div class="input-group col-sm-4">
-                                <select class="form-control" name="pid" id="pid" required="" aria-required="true">
-                                    <option value="0">--请选择--</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">所属部门：</label>
-                            <div class="input-group col-sm-4">
-                                <select class="form-control" name="deptid" id="deptid" required="" aria-required="true">
-                                    <option value="0">--请选择--</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">系列号最大生成数量：</label>
+                            <label class="col-sm-4 control-label">系列号默认最大生成数量：</label>
                             <div class="input-group col-sm-4">
                                 <input id="maxnum" type="number" class="form-control" name="maxnum" required="" aria-required="true">
                             </div>
@@ -109,29 +65,18 @@
 
 
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">系列号最大使用次数：</label>
+                            <label class="col-sm-4 control-label">系列号默认最大使用次数：</label>
                             <div class="input-group col-sm-4">
                                 <input id="maxtimes" type="text" class="form-control" name="maxtimes" required="" aria-required="true">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">是否启用：</label>
-                            <div class="input-group col-sm-4">
-                                {foreach name='status' item='vo' key='key'}
-                                <div class="radio i-checks col-sm-4">
-                                    <label>
-                                        <input type="radio" value="{$key}" {if condition="$key == 1 " }checked{/if} name="status"> <i></i> {$vo}</label>
-                                </div>
-                                {/foreach}
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-4">
                                 <!--<input type="button" value="提交" class="btn btn-primary" id="postform"/>-->
                                 <button class="btn btn-primary" type="submit">提交</button>
                                 &nbsp;&nbsp;
-                                <a href="{:url('user/index')}" class="btn btn-primary">返回</a>
+                                <a href="{:url('dept/index')}" class="btn btn-primary">返回</a>
                             </div>
                         </div>
                     </form>
@@ -156,7 +101,7 @@
     //表单提交
     function toVaild(){
         var jz;
-        var url = "./userAdd";
+        var url = "./deptAdd";
         $.ajax({
             type:"POST",
             url:url,
@@ -183,11 +128,13 @@
 
         return false;
     }
-
-    //表单验证
+    
+    //单选按钮特效
     $(document).ready(function(){
         $(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});
     });
+
+    //表单验证
     $.validator.setDefaults({
         highlight: function(e) {
             $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
@@ -202,44 +149,6 @@
         errorClass: "help-block m-b-none",
         validClass: "help-block m-b-none"
     });
-
-</script>
-<script type="text/javascript">
-    $("#dept1").change(function(){
-        $.getJSON('../api/getUserByTeptId', {'id' : $(this).val()}, function(res){
-            if(res){
-                var html='<option value="0">--请选择--</option>';
-                $.each(res, function(i, value) {
-                    html+='<option value="'+value.id+'">'+value.username+'</option>'
-                });
-                $('#pid').html(html);
-            }else{
-                layer.alert("操作失败");
-            }
-        });
-        $.getJSON('../api/getDeptByTeptId', {'id' : $(this).val()}, function(res){
-            if(res){
-                var html='<option value="0">--请选择--</option>';
-                $.each(res, function(i, value) {
-                    html+='<option value="'+value.id+'">'+value.deptname+'</option>'
-                });
-                $('#deptid').html(html);
-            }else{
-                layer.alert("操作失败");
-            }
-        });
-    })
-    $("#deptid").change(function(){
-        $.getJSON('../api/getMaxByTeptId', {'id' : $(this).val()}, function(res){
-            if(res){
-                $('#maxtimes').val(res.maxtimes);
-                $('#maxnum').val(res.maxnum);
-            }else{
-                layer.alert("操作失败");
-            }
-        });
-        
-    })
 </script>
 </body>
 </html>

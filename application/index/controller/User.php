@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\index\controller;
 
+use app\index\model\DeptModel;
 use app\index\model\UserModel;
 use app\index\model\UserType;
 
@@ -82,10 +83,19 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
+        $deptModel = new DeptModel();
+        $dept = $deptModel->getTree();
+
+        foreach ($dept as $key => $vo) {
+
+            $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
+        }
+
         $role = new UserType();
         $this->assign([
             'role' => $role->getRole(),
             'status' => config('user_status'),
+            'dept' => $dept,
         ]);
 
         return $this->fetch();
@@ -158,4 +168,5 @@ class User extends Base
 
         return $this->fetch();
     }
+
 }

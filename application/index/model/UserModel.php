@@ -146,4 +146,18 @@ class UserModel extends Model
         }
     }
 
+    /**
+     * 根据部门id获取用户信息
+     * @param $id
+     */
+    public function getByDeptId($id)
+    {
+        return $this->where('deptid', $id)->find();
+    }
+
+    public function getUsersByTeptId($id)
+    {
+        return $this->field('id,username')->where('deptid', $id)->select();
+    }
+
 }
