@@ -8,10 +8,10 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\controller;
+namespace app\index\controller;
 
-use app\admin\model\Node;
-use app\admin\model\UserType;
+use app\index\model\Node;
+use app\index\model\UserType;
 
 class Auth extends Base
 {

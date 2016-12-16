@@ -8,14 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\validate;
+namespace app\index\validate;
 
 use think\Validate;
 
 class RoleValidate extends Validate
 {
     protected $rule = [
-        ['rolename', 'unique:role', '角色已经存在']
+        ['rolename', 'unique:role', '角色已经存在'],
     ];
 
 }

@@ -8,10 +8,10 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\controller;
+namespace app\index\controller;
 
-use app\admin\model\UserModel;
-use app\admin\model\UserType;
+use app\index\model\UserModel;
+use app\index\model\UserType;
 
 class User extends Base
 {
@@ -22,14 +22,14 @@ class User extends Base
 
             $param = input('param.');
 
-            $limit  = $param['pageSize'];
+            $limit = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['username'] = ['like', '%' . $param['searchText'] . '%'];
             }
-            $user         = new UserModel();
+            $user = new UserModel();
             $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
             $status = config('user_status');
@@ -59,7 +59,7 @@ class User extends Base
             }
 
             $return['total'] = $user->getAllUsers($where); //总数据
-            $return['rows']  = $selectResult;
+            $return['rows'] = $selectResult;
 
             return json($return);
         }
@@ -76,15 +76,15 @@ class User extends Base
             $param = parseParams($param['data']);
 
             $param['password'] = md5($param['password']);
-            $user              = new UserModel();
-            $flag              = $user->insertUser($param);
+            $user = new UserModel();
+            $flag = $user->insertUser($param);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
         $role = new UserType();
         $this->assign([
-            'role'   => $role->getRole(),
+            'role' => $role->getRole(),
             'status' => config('user_status'),
         ]);
 
@@ -110,12 +110,12 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $id   = input('param.id');
+        $id = input('param.id');
         $role = new UserType();
         $this->assign([
-            'user'   => $user->getOneUser($id),
+            'user' => $user->getOneUser($id),
             'status' => config('user_status'),
-            'role'   => $role->getRole(),
+            'role' => $role->getRole(),
         ]);
         return $this->fetch();
     }

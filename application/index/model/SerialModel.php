@@ -117,7 +117,7 @@ class SerialModel extends Model
     public function createSerial($numbers, $length = 12)
     {
 
-        $str       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $str = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $serialArr = array();
         for ($i = 0; $i < $numbers; $i++) {
             $serial = $_SESSION['think']['id'];
@@ -138,34 +138,10 @@ class SerialModel extends Model
         foreach ($serialArr as $k => $v) {
             $serialArr[$k]['can_use_num'] = $times;
             $serialArr[$k]['surplus_num'] = $times;
-            $serialArr[$k]['createtime']  = time();
-            $serialArr[$k]['userid']      = $_SESSION['think']['id'];
+            $serialArr[$k]['createtime'] = time();
+            $serialArr[$k]['userid'] = $_SESSION['think']['id'];
         }
 
         return $serialArr;
-    }
-
-    public function checkBySerial($where)
-    {
-        return $this->where($where)->count();
-    }
-
-    public function useSerial($param)
-    {
-        try {
-
-            $result = $this->save($param, ['serial' => $param['serial']]);
-
-            if (false === $result) {
-                // 使用失败 输出错误信息
-                return false;
-            } else {
-
-                return true;
-            }
-        } catch (PDOException $e) {
-            return false;
-        }
-
     }
 }

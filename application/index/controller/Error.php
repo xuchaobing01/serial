@@ -8,16 +8,24 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\validate;
+namespace app\index\controller;
 
-use think\Validate;
+use think\Controller;
+use think\Request;
 
-class AdminValidate extends Validate
+class Error extends Controller
 {
-    protected $rule = [
-        ['username', 'require', '用户名不能为空'],
-        ['password', 'require', '密码不能为空'],
-        ['code', 'require', '验证码不能为空']
-    ];
+
+    public function index(Request $request)
+    {
+        $name = $request->controller();
+        $this->error("控制器" . $name . "不存在");
+
+    }
+
+    // public function _empty()
+    // {
+    //     $this->error('服务器还在维护中...');
+    // }
 
 }

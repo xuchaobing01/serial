@@ -8,14 +8,16 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\validate;
+namespace app\index\validate;
 
 use think\Validate;
 
-class UserValidate extends Validate
+class AdminValidate extends Validate
 {
     protected $rule = [
-        ['username', 'unique:user', '管理员已经存在']
+        ['username', 'require', '用户名不能为空'],
+        ['password', 'require', '密码不能为空'],
+        ['code', 'require', '验证码不能为空'],
     ];
 
 }

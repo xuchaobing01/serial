@@ -8,9 +8,9 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\controller;
+namespace app\index\controller;
 
-use app\admin\model\Node;
+use app\index\model\Node;
 use think\Controller;
 
 class Base extends Controller
@@ -33,7 +33,7 @@ class Base extends Controller
 
         //检测权限
         $control = lcfirst(request()->controller());
-        $action  = lcfirst(request()->action());
+        $action = lcfirst(request()->action());
 
         //跳过登录系列的检测以及主页权限
         if (!in_array($control, ['login', 'index'])) {
@@ -48,7 +48,7 @@ class Base extends Controller
 
         $this->assign([
             'username' => session('username'),
-            'menu'     => $node->getMenu(session('rule')),
+            'menu' => $node->getMenu(session('rule')),
             'rolename' => session('role'),
         ]);
 

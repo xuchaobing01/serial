@@ -8,24 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\controller;
+namespace app\index\validate;
 
-use think\Controller;
-use think\Request;
+use think\Validate;
 
-class Error extends Controller
+class UserValidate extends Validate
 {
-
-    public function index(Request $request)
-    {
-        $name = $request->controller();
-        $this->error("控制器" . $name . "不存在");
-
-    }
-
-    // public function _empty()
-    // {
-    //     $this->error('服务器还在维护中...');
-    // }
+    protected $rule = [
+        ['username', 'unique:user', '管理员已经存在'],
+    ];
 
 }

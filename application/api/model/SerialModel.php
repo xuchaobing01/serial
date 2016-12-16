@@ -8,21 +8,35 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\controller;
+namespace app\api\model;
 
-class Index extends Base
+use think\Model;
+
+class SerialModel extends Model
 {
-    public function index()
+    protected $table = 'snake_serial';
+
+    public function checkBySerial($where)
     {
-        return $this->fetch('/index');
+        return $this->where($where)->count();
     }
 
-    /**
-     * 后台默认首页
-     * @return mixed
-     */
-    public function indexPage()
+    public function useSerial($param)
     {
-        return $this->fetch('index');
+        try {
+
+            $result = $this->save($param, ['serial' => $param['serial']]);
+
+            if (false === $result) {
+                // 使用失败 输出错误信息
+                return false;
+            } else {
+
+                return true;
+            }
+        } catch (PDOException $e) {
+            return false;
+        }
+
     }
 }

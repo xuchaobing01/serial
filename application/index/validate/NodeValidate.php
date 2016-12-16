@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: NickBai <1902822973@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\validate;
+namespace app\index\validate;
 
 use think\Validate;
 
