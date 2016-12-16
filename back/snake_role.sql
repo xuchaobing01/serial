@@ -9,4 +9,4 @@ CREATE TABLE `snake_role` (
 
 insert into `snake_role`(`id`,`rolename`,`rule`) values('1','超级管理员','');
 insert into `snake_role`(`id`,`rolename`,`rule`) values('2','管理员组','26,27,28,29,30,1,2,3,4,5,6,7,8,11,24,12,14,13,25');
-insert into `snake_role`(`id`,`rolename`,`rule`) values('3','合作商组','26,27,28,29,30,11,24,25');
+insert into `snake_role`(`id`,`rolename`,`rule`) values('3','合作商组','26,27,28,29,30,1,2,3,4,11,24,25');
