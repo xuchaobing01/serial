@@ -23,23 +23,34 @@ class User extends Base
 
             $param = input('param.');
 
-            $limit = $param['pageSize'];
+            $limit  = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
             if (isset($param['searchText']) && !empty($param['searchText'])) {
                 $where['username'] = ['like', '%' . $param['searchText'] . '%'];
             }
-            $user = new UserModel();
+            $user         = new UserModel();
             $selectResult = $user->getUsersByWhere($where, $offset, $limit);
-
-            $status = config('user_status');
+            $dept         = new DeptModel();
+            $status       = config('user_status');
 
             foreach ($selectResult as $key => $vo) {
-
-                $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
+                if ($vo['last_login_time']) {
+                    $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
+                } else {
+                    $selectResult[$key]['last_login_time'] = '';
+                }
 
                 $selectResult[$key]['serialnum'] = '<span class="label label-warning">' . $vo['serialnum'] . '</span>';
+
+                if ($selectResult[$key]['pid'] != 0) {
+                    $selectResult[$key]['pid'] = $user->getUserNameByUserId($selectResult[$key]['pid']);
+                }
+
+                if ($selectResult[$key]['deptid'] != 0) {
+                    $selectResult[$key]['deptid'] = $dept->getDeptNameById($selectResult[$key]['deptid']);
+                }
 
                 if ($vo['status'] == 1) {
                     $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
@@ -60,7 +71,7 @@ class User extends Base
             }
 
             $return['total'] = $user->getAllUsers($where); //总数据
-            $return['rows'] = $selectResult;
+            $return['rows']  = $selectResult;
 
             return json($return);
         }
@@ -71,20 +82,24 @@ class User extends Base
     //添加用户
     public function userAdd()
     {
+
         if (request()->isPost()) {
 
             $param = input('param.');
             $param = parseParams($param['data']);
 
             $param['password'] = md5($param['password']);
-            $user = new UserModel();
-            $flag = $user->insertUser($param);
+            $user              = new UserModel();
+            $flag              = $user->insertUser($param);
 
+            if (($flag['code'] == 1) && ($flag['data'] > 0)) {
+                $user->getFamily($flag['data']);
+            }
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
         $deptModel = new DeptModel();
-        $dept = $deptModel->getTree();
+        $dept      = $deptModel->getTree();
 
         foreach ($dept as $key => $vo) {
 
@@ -92,10 +107,15 @@ class User extends Base
         }
 
         $role = new UserType();
+
+        $userModel = new UserModel();
+        $user      = $userModel->getOneUser(session('id'));
+
         $this->assign([
-            'role' => $role->getRole(),
+            'role'   => $role->getRole(),
             'status' => config('user_status'),
-            'dept' => $dept,
+            'dept'   => $dept,
+            'user'   => $user,
         ]);
 
         return $this->fetch();
@@ -120,12 +140,25 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $id = input('param.id');
+        $deptModel = new DeptModel();
+        $dept      = $deptModel->getTree();
+        $dept1     = $dept;
+        foreach ($dept as $key => $vo) {
+
+            $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
+        }
+
+        $id   = input('param.id');
+        $user = $user->getOneUser($id);
         $role = new UserType();
         $this->assign([
-            'user' => $user->getOneUser($id),
+            'user'   => $user,
             'status' => config('user_status'),
-            'role' => $role->getRole(),
+            'role'   => $role->getRole(),
+            'parent' => $user['pid'] != 0 ? $user->getOneUser($user['pid']) : '',
+            'self'   => $user->getOneUser(session('id')),
+            'dept'   => $dept,
+            'dept1'  => $dept1,
         ]);
         return $this->fetch();
     }
@@ -135,8 +168,15 @@ class User extends Base
     {
         $id = input('param.id');
 
-        $role = new UserModel();
-        $flag = $role->delUser($id);
+        $UserModel = new UserModel();
+
+        $rs = $UserModel->getOneUser($id);
+        if (!empty($rs['son'])) {
+            return json(['code' => 0, 'data' => '', 'msg' => '该用户下面有用户不可以删除']);
+            die();
+        }
+
+        $flag = $UserModel->delUser($id);
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
     /**

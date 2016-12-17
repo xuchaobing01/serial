@@ -36,13 +36,27 @@
                     <form class="form-horizontal m-t" id="commentForm" method="post" onsubmit="return toVaild()">
                         <input type="hidden" name="id" value="{$user.id}">
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">管理员名称：</label>
+                            <label class="col-sm-4 control-label">管理员名称：</label>
                             <div class="input-group col-sm-4">
                                 <input id="username" type="text" class="form-control" name="username" required="" aria-required="true" value="{$user.username}">
                             </div>
                         </div>
+
+                        {if condition="($self.typeid == 3)"}
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">管理员角色：</label>
+                            <label class="col-sm-4 control-label">管理员角色：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="typeid" type="hidden" class="form-control" name="typeid" required="" aria-required="true" value="{$user.typeid}">
+                                {if !empty($role)}
+                                    {foreach name="role" item="vo"}
+                                        {if condition="$user['typeid'] eq $vo['id']"}{$vo.rolename}{/if}
+                                    {/foreach}
+                                {/if}
+                            </div>
+                        </div>
+                        {else}
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">管理员角色：</label>
                             <div class="input-group col-sm-4">
                                 <select class="form-control" name="typeid" required="" aria-required="true">
                                     <option value="0">请选择</option>
@@ -54,21 +68,89 @@
                                 </select>
                             </div>
                         </div>
+                        {/if}
+
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">登录密码：</label>
+                            <label class="col-sm-4 control-label">登录密码：</label>
                             <div class="input-group col-sm-4">
                                 <input id="password" type="text" class="form-control" name="password"  placeholder="再次输入修改密码">
                             </div>
                         </div>
+                        
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">真是姓名：</label>
+                            <label class="col-sm-4 control-label">真是姓名：</label>
                             <div class="input-group col-sm-4">
                                 <input id="real_name" type="text" class="form-control" name="real_name" required="" aria-required="true" value="{$user.real_name}">
 
                             </div>
                         </div>
+
+                        {if condition="($self.typeid == 3)"}
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">是否启用：</label>
+                            <label class="col-sm-4 control-label">部门：</label>
+                            <div class="input-group col-sm-4">
+                                <div class="input-group col-sm-4">
+                                {if !empty($dept1)}
+                                    {foreach name="dept1" item="v"}
+                                    {if condition="($parent.deptid == $v.id)" }
+                                        <input id="dept1" type="hidden" class="form-control" required="" aria-required="true" value="{$v.id}">
+                                        {$v.deptname}
+                                    {/if}
+                                    {/foreach}
+                                {/if}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">所属用户：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="pid" type="hidden" class="form-control" name="pid" required="" aria-required="true" value="{$parent.id}">
+                                {$parent.username}
+                            </div>
+                        </div>
+
+                        
+                        {else}
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">部门：</label>
+                            <div class="input-group col-sm-4">
+                                <select class="form-control" id="dept1" >
+                                    <option value="0">--请选择--</option>
+                                    {if !empty($dept)}
+                                    {foreach name="dept" item="vo"}
+                                    <option value="{$vo.id}">{$vo.deptname}</option>
+                                    {/foreach}
+                                    {/if}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">所属用户：</label>
+                            <div class="input-group col-sm-4">
+                                <select class="form-control" name="pid" id="pid" required="" aria-required="true">
+                                    <option value="0">--请选择--</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {/if}
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">所属部门：</label>
+                            <div class="input-group col-sm-4">
+                                <select class="form-control" name="deptid" id="deptid" required="" aria-required="true">
+                                    <option value="0">--请选择--</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        
+                        
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">是否启用：</label>
                             <div class="input-group col-sm-4">
                                 {foreach name='status' item='vo' key='key'}
                                 <div class="radio i-checks col-sm-4">
@@ -79,7 +161,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-4 col-sm-offset-3">
+                            <div class="col-sm-4 col-sm-offset-4">
                                 <!--<input type="button" value="提交" class="btn btn-primary" id="postform"/>-->
                                 <button class="btn btn-primary" type="submit">提交</button>
                                 &nbsp;&nbsp;
@@ -155,6 +237,23 @@
         validClass: "help-block m-b-none"
     });
 
+</script>
+<script>
+
+    {if condition="($self.typeid == 3)"}
+    $.getJSON('../api/getDeptByTeptId', {'id' : $('#dept1').val()}, function(res){
+        if(res){
+            var html='<option value="0">--请选择--</option>';
+            $.each(res, function(i, value) {
+                html+='<option value="'+value.id+'">'+value.deptname+'</option>'
+            });
+            $('#deptid').html(html);
+        }else{
+            layer.alert("操作失败");
+        }
+    });
+    {/if}
+    
 </script>
 </body>
 </html>

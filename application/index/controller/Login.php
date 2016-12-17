@@ -28,7 +28,7 @@ class Login extends Controller
 
         $username = input("param.username");
         $password = input("param.password");
-        $code = input("param.code");
+        $code     = input("param.code");
 
         $result = $this->validate(compact('username', 'password', "code"), 'AdminValidate');
         if (true !== $result) {
@@ -65,8 +65,8 @@ class Login extends Controller
 
         //更新管理员状态
         $param = [
-            'loginnum' => $hasUser['loginnum'] + 1,
-            'last_login_ip' => request()->ip(),
+            'loginnum'        => $hasUser['loginnum'] + 1,
+            'last_login_ip'   => request()->ip(),
             'last_login_time' => time(),
         ];
 
@@ -78,10 +78,10 @@ class Login extends Controller
     //验证码
     public function checkVerify()
     {
-        $verify = new Verify();
-        $verify->imageH = 32;
-        $verify->imageW = 100;
-        $verify->length = 4;
+        $verify           = new Verify();
+        $verify->imageH   = 32;
+        $verify->imageW   = 100;
+        $verify->length   = 4;
         $verify->useNoise = false;
         $verify->fontSize = 14;
         return $verify->entry();

@@ -41,6 +41,16 @@
                                 <input id="username" type="text" class="form-control" name="username" required="" aria-required="true">
                             </div>
                         </div>
+
+                        {if condition="($user.typeid == 3)"}
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">管理员角色：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="typeid" type="hidden" class="form-control" name="typeid" required="" aria-required="true" value="{$user.typeid}">
+                                {$Think.session.role}
+                            </div>
+                        </div>
+                        {else}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">管理员角色：</label>
                             <div class="input-group col-sm-4">
@@ -54,6 +64,8 @@
                                 </select>
                             </div>
                         </div>
+                        {/if}
+
                         <div class="form-group">
                             <label class="col-sm-4 control-label">登录密码：</label>
                             <div class="input-group col-sm-4">
@@ -67,7 +79,42 @@
 
                             </div>
                         </div>
+                        
+                        {if condition="($user.typeid == 3)"}
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">部门：</label>
+                            <div class="input-group col-sm-4">
+                                <div class="input-group col-sm-4">
 
+                                    {if !empty($dept)}
+                                    {foreach name="dept" item="vo"}
+                                    {if condition="($user.deptid == $vo.id)" }
+                                        <input id="dept1" type="hidden" class="form-control" required="" aria-required="true" value="{$vo.id}">
+                                        {$vo.deptname}
+                                    {/if}
+                                    {/foreach}
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">所属用户：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="pid" type="hidden" class="form-control" name="pid" required="" aria-required="true" value="{$user.id}">
+                                {$Think.session.username}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">所属部门：</label>
+                            <div class="input-group col-sm-4">
+                                <select class="form-control" name="deptid" id="deptid" required="" aria-required="true">
+                                    <option value="0">--请选择--</option>
+                                </select>
+                            </div>
+                        </div>
+                        {else}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">部门：</label>
                             <div class="input-group col-sm-4">
@@ -99,7 +146,30 @@
                                 </select>
                             </div>
                         </div>
+                        {/if}
+                        
+                        {if condition="($user.typeid == 3)"}
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">系列号最大生成数量：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="maxnum" type="hidden" class="form-control" name="maxnum" required="" aria-required="true">
+                                <span id="maxnum1" >
+                                    0
+                                </span>
+                            </div>
+                        </div>
 
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">系列号最大使用次数：</label>
+                            <div class="input-group col-sm-4">
+                                <input id="maxtimes" type="hidden" class="form-control" name="maxtimes" required="" aria-required="true">
+                                <span id="maxtimes1" >
+                                    0
+                                </span>
+                            </div>
+                        </div>
+                        {else}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">系列号最大生成数量：</label>
                             <div class="input-group col-sm-4">
@@ -114,6 +184,8 @@
                                 <input id="maxtimes" type="text" class="form-control" name="maxtimes" required="" aria-required="true">
                             </div>
                         </div>
+                        {/if}
+                        
 
                         <div class="form-group">
                             <label class="col-sm-4 control-label">是否启用：</label>
@@ -234,12 +306,29 @@
             if(res){
                 $('#maxtimes').val(res.maxtimes);
                 $('#maxnum').val(res.maxnum);
+                {if condition="($user.typeid == 3)"}
+                    $('#maxtimes1').html(res.maxtimes);
+                    $('#maxnum1').html(res.maxnum);
+                {/if}
             }else{
                 layer.alert("操作失败");
             }
         });
         
     })
+    {if condition="($user.typeid == 3)"}
+    $.getJSON('../api/getDeptByTeptId', {'id' : $('#dept1').val()}, function(res){
+        if(res){
+            var html='<option value="0">--请选择--</option>';
+            $.each(res, function(i, value) {
+                html+='<option value="'+value.id+'">'+value.deptname+'</option>'
+            });
+            $('#deptid').html(html);
+        }else{
+            layer.alert("操作失败");
+        }
+    });
+    {/if}
 </script>
 </body>
 </html>

@@ -24,7 +24,7 @@ class UserModel extends Model
      */
     public function getUsersByWhere($where, $offset, $limit)
     {
-        return $this->field('snake_user.*,rolename')
+        return $this->field('snake_user.*,snake_role.rolename')
             ->join('snake_role', 'snake_user.typeid = snake_role.id')
             ->where($where)->limit($offset, $limit)->order('id desc')->select();
     }
@@ -52,7 +52,7 @@ class UserModel extends Model
                 return ['code' => -1, 'data' => '', 'msg' => $this->getError()];
             } else {
 
-                return ['code' => 1, 'data' => '', 'msg' => '添加用户成功'];
+                return ['code' => 1, 'data' => $this->id, 'msg' => '添加用户成功'];
             }
         } catch (PDOException $e) {
 
@@ -158,6 +158,26 @@ class UserModel extends Model
     public function getUsersByTeptId($id)
     {
         return $this->field('id,username')->where('deptid', $id)->select();
+    }
+
+    public function getFamily($cat_id)
+    {
+        $id = $cat_id;
+        while ($cat_id > 0) {
+            $pid = $this->field('pid')->where('id', $cat_id)->find();
+            $pid = $pid['pid'];
+            if ($pid != 0) {
+                $this->query('UPDATE `snake_user` SET son = CONCAT(son, CASE son WHEN "" THEN "' . $id . '" ELSE ",' . $id . '" END ) where id=' . $pid);
+            }
+            $cat_id = $pid;
+        }
+        return true;
+    }
+
+    public function getUserNameByUserId($id)
+    {
+        $user = $this->field('username')->where('id', $id)->find();
+        return $user->username;
     }
 
 }

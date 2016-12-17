@@ -22,7 +22,7 @@ class Api extends Controller
         $id = input('param.id');
 
         $userModel = new UserModel();
-        $users = $userModel->getUsersByTeptId($id);
+        $users     = $userModel->getUsersByTeptId($id);
         return json($users);
     }
 
@@ -31,7 +31,7 @@ class Api extends Controller
         $id = input('param.id');
 
         $deptModel = new DeptModel();
-        $depts = $deptModel->getDeptsByTeptId($id);
+        $depts     = $deptModel->getDeptsByTeptId($id);
         return json($depts);
     }
 
@@ -40,7 +40,7 @@ class Api extends Controller
         $id = input('param.id');
 
         $deptModel = new DeptModel();
-        $dept = $deptModel->getMaxsByTeptId($id);
+        $dept      = $deptModel->getMaxsByTeptId($id);
         return json($dept);
     }
 }
