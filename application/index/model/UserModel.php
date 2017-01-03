@@ -173,11 +173,29 @@ class UserModel extends Model
         }
         return true;
     }
+    public function delFamily($cat_id)
+    {
+        $id = $cat_id;
+        while ($cat_id > 0) {
+            $pid = $this->field('pid')->where('id', $cat_id)->find();
+            $pid = $pid['pid'];
+            if ($pid != 0) {
+                $sons = $this->field('son')->where('id', $id)->find();
+                $sonsArr=explode(",",$str)
+            }
+            $cat_id = $pid;
+        }
+        return true;
+    }
 
     public function getUserNameByUserId($id)
     {
         $user = $this->field('username')->where('id', $id)->find();
         return $user->username;
+    }
+    public function getAllUser()
+    {
+        return $this->field('id,username')->where('typeid=3')->order('id desc')->select();
     }
 
 }

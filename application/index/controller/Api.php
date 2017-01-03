@@ -17,30 +17,55 @@ use think\Controller;
 class Api extends Controller
 {
 
-    public function getUserByTeptId()
+    // public function getUserByTeptId()
+    // {
+    //     $id = input('param.id');
+
+    //     $userModel = new UserModel();
+    //     $users = $userModel->getUsersByTeptId($id);
+    //     return json($users);
+    // }
+
+    // public function getDeptByTeptId()
+    // {
+    //     $id = input('param.id');
+
+    //     $deptModel = new DeptModel();
+    //     $depts = $deptModel->getDeptsByTeptId($id);
+    //     return json($depts);
+    // }
+
+    // public function getMaxByTeptId()
+    // {
+    //     $id = input('param.id');
+
+    //     $deptModel = new DeptModel();
+    //     $dept = $deptModel->getMaxsByTeptId($id);
+    //     return json($dept);
+    // }
+    public function getMaxByUserId()
     {
         $id = input('param.id');
 
         $userModel = new UserModel();
-        $users     = $userModel->getUsersByTeptId($id);
+        $users = $userModel->getOneUser($id);
         return json($users);
     }
-
-    public function getDeptByTeptId()
+    public function getDeptByUserId()
     {
         $id = input('param.id');
 
+        $userModel = new UserModel();
+        $deptid = $userModel->getOneUser($id)['deptid'];
+
         $deptModel = new DeptModel();
-        $depts     = $deptModel->getDeptsByTeptId($id);
+        $depts = $deptModel->getTree($deptid);
         return json($depts);
     }
-
-    public function getMaxByTeptId()
+    public function getAllUser1()
     {
-        $id = input('param.id');
-
-        $deptModel = new DeptModel();
-        $dept      = $deptModel->getMaxsByTeptId($id);
-        return json($dept);
+        $userModel = new UserModel();
+        $users = $userModel->getAllUser();
+        return json($users);
     }
 }

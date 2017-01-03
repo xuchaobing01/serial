@@ -20,8 +20,8 @@ class DeptModel extends Model
         foreach ($cats as $c) {
             if ($c['pid'] == $parent_id) {
                 $c['lev'] = $lev;
-                $tree[]   = $c; // 手机类型
-                $tree     = array_merge($tree, $this->getTree($c['id'], $lev + 1));
+                $tree[] = $c; // 手机类型
+                $tree = array_merge($tree, $this->getTree($c['id'], $lev + 1));
             }
         }
 
