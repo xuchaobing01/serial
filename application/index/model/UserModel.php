@@ -173,15 +173,34 @@ class UserModel extends Model
         }
         return true;
     }
+    public function getFamily1($pid, $uid)
+    {
+        $id = $uid;
+        while ($pid > 0) {
+            $this->query('UPDATE `snake_user` SET son = CONCAT(son, CASE son WHEN "" THEN "' . $id . '" ELSE ",' . $id . '" END ) where id=' . $pid);
+            $pid = $this->field('pid')->where('id', $pid)->find();
+            $pid = $pid['pid'];
+        }
+        return true;
+    }
     public function delFamily($cat_id)
     {
+
         $id = $cat_id;
         while ($cat_id > 0) {
             $pid = $this->field('pid')->where('id', $cat_id)->find();
             $pid = $pid['pid'];
+
             if ($pid != 0) {
-                $sons = $this->field('son')->where('id', $id)->find();
-                $sonsArr=explode(",",$str)
+                $sons = $this->field('son')->where('id', $pid)->find()['son'];
+                $sonsArr = explode(",", $sons);
+                $key = array_search($id, $sonsArr);
+                if ($key !== false) {
+                    unset($sonsArr[$key]);
+                }
+                $sons = implode(",", $sonsArr);
+
+                $this->query('UPDATE `snake_user` SET son = "' . $sons . '" where id=' . $pid);
             }
             $cat_id = $pid;
         }

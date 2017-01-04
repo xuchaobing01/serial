@@ -20,60 +20,124 @@ class User extends Base
     public function index()
     {
         if (request()->isAjax()) {
+            //获取一个用户信息
+            $userModel = new UserModel();
+            $self = $userModel->getOneUser(session('id'));
 
-            $param = input('param.');
+            if ($self['typeid'] == 3) {
+                $param = input('param.');
 
-            $limit = $param['pageSize'];
-            $offset = ($param['pageNumber'] - 1) * $limit;
+                $limit = $param['pageSize'];
+                $offset = ($param['pageNumber'] - 1) * $limit;
 
-            $where = [];
-            if (isset($param['searchText']) && !empty($param['searchText'])) {
-                $where['username'] = ['like', '%' . $param['searchText'] . '%'];
+                $where = [];
+                $where['snake_user.id'] = ['in', $self['son']];
+
+                if (isset($param['searchText']) && !empty($param['searchText'])) {
+                    $where['username'] = ['like', '%' . $param['searchText'] . '%'];
+                }
+                $user = new UserModel();
+                $selectResult = $user->getUsersByWhere($where, $offset, $limit);
+                $dept = new DeptModel();
+                $status = config('user_status');
+
+                foreach ($selectResult as $key => $vo) {
+                    if ($vo['last_login_time']) {
+                        $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
+                    } else {
+                        $selectResult[$key]['last_login_time'] = '';
+                    }
+
+                    $selectResult[$key]['serialnum'] = '<span class="label label-warning">' . $vo['serialnum'] . '</span>';
+
+                    if ($selectResult[$key]['pid'] != 0) {
+                        $selectResult[$key]['pid'] = $user->getUserNameByUserId($selectResult[$key]['pid']);
+                    }
+
+                    if ($selectResult[$key]['deptid'] != 0) {
+                        $selectResult[$key]['deptid'] = $dept->getDeptNameById($selectResult[$key]['deptid']);
+                    }
+
+                    if ($vo['status'] == 1) {
+                        $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
+                    } else {
+                        $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
+                    }
+
+                    $operate = [
+                        '编辑' => url('user/userEdit', ['id' => $vo['id']]),
+                        '删除' => "javascript:userDel('" . $vo['id'] . "')",
+                    ];
+
+                    $selectResult[$key]['operate'] = showOperate($operate);
+
+                    if (1 == $vo['id']) {
+                        $selectResult[$key]['operate'] = '';
+                    }
+                }
+
+                $return['total'] = $user->getAllUsers($where); //总数据
+                $return['rows'] = $selectResult;
+
+                return json($return);
+
+            } else {
+
+                $param = input('param.');
+
+                $limit = $param['pageSize'];
+                $offset = ($param['pageNumber'] - 1) * $limit;
+
+                $where = [];
+                if (isset($param['searchText']) && !empty($param['searchText'])) {
+                    $where['username'] = ['like', '%' . $param['searchText'] . '%'];
+                }
+                $user = new UserModel();
+                $selectResult = $user->getUsersByWhere($where, $offset, $limit);
+                $dept = new DeptModel();
+                $status = config('user_status');
+
+                foreach ($selectResult as $key => $vo) {
+                    if ($vo['last_login_time']) {
+                        $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
+                    } else {
+                        $selectResult[$key]['last_login_time'] = '';
+                    }
+
+                    $selectResult[$key]['serialnum'] = '<span class="label label-warning">' . $vo['serialnum'] . '</span>';
+
+                    if ($selectResult[$key]['pid'] != 0) {
+                        $selectResult[$key]['pid'] = $user->getUserNameByUserId($selectResult[$key]['pid']);
+                    }
+
+                    if ($selectResult[$key]['deptid'] != 0) {
+                        $selectResult[$key]['deptid'] = $dept->getDeptNameById($selectResult[$key]['deptid']);
+                    }
+
+                    if ($vo['status'] == 1) {
+                        $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
+                    } else {
+                        $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
+                    }
+
+                    $operate = [
+                        '编辑' => url('user/userEdit', ['id' => $vo['id']]),
+                        '删除' => "javascript:userDel('" . $vo['id'] . "')",
+                    ];
+
+                    $selectResult[$key]['operate'] = showOperate($operate);
+
+                    if (1 == $vo['id']) {
+                        $selectResult[$key]['operate'] = '';
+                    }
+                }
+
+                $return['total'] = $user->getAllUsers($where); //总数据
+                $return['rows'] = $selectResult;
+
+                return json($return);
             }
-            $user = new UserModel();
-            $selectResult = $user->getUsersByWhere($where, $offset, $limit);
-            $dept = new DeptModel();
-            $status = config('user_status');
 
-            foreach ($selectResult as $key => $vo) {
-                if ($vo['last_login_time']) {
-                    $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
-                } else {
-                    $selectResult[$key]['last_login_time'] = '';
-                }
-
-                $selectResult[$key]['serialnum'] = '<span class="label label-warning">' . $vo['serialnum'] . '</span>';
-
-                if ($selectResult[$key]['pid'] != 0) {
-                    $selectResult[$key]['pid'] = $user->getUserNameByUserId($selectResult[$key]['pid']);
-                }
-
-                if ($selectResult[$key]['deptid'] != 0) {
-                    $selectResult[$key]['deptid'] = $dept->getDeptNameById($selectResult[$key]['deptid']);
-                }
-
-                if ($vo['status'] == 1) {
-                    $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
-                } else {
-                    $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
-                }
-
-                $operate = [
-                    '编辑' => url('user/userEdit', ['id' => $vo['id']]),
-                    '删除' => "javascript:userDel('" . $vo['id'] . "')",
-                ];
-
-                $selectResult[$key]['operate'] = showOperate($operate);
-
-                if (1 == $vo['id']) {
-                    $selectResult[$key]['operate'] = '';
-                }
-            }
-
-            $return['total'] = $user->getAllUsers($where); //总数据
-            $return['rows'] = $selectResult;
-
-            return json($return);
         }
 
         return $this->fetch();
@@ -94,6 +158,9 @@ class User extends Base
             if ($self['typeid'] == 3) {
                 if ($param['typeid'] != 3) {
                     $param['typeid'] = 3;
+                }
+                if ($param['pid'] != $self['id']) {
+                    $param['pid'] = $self['id'];
                 }
                 if ($param['maxtimes'] != $self['maxtimes']) {
                     $param['maxtimes'] = $self['maxtimes'];
@@ -169,12 +236,47 @@ class User extends Base
     //编辑角色
     public function userEdit()
     {
-        $user = new UserModel();
+        //获取一个用户信息
+        $userModel = new UserModel();
+        $self = $userModel->getOneUser(session('id'));
 
         if (request()->isPost()) {
 
+            $user = new UserModel();
+
             $param = input('post.');
             $param = parseParams($param['data']);
+
+            if ($self['typeid'] == 3) {
+                if ($param['typeid'] != 3) {
+                    $param['typeid'] = 3;
+                }
+                if ($param['pid'] != $self['id']) {
+                    $param['pid'] = $self['id'];
+                }
+                if ($param['maxtimes'] != $self['maxtimes']) {
+                    $param['maxtimes'] = $self['maxtimes'];
+                }
+                if ($param['maxnum'] != $self['maxnum']) {
+                    $param['maxnum'] = $self['maxnum'];
+                }
+            }
+
+            if (($self['typeid'] != 3) && ($param['pid'] != $param['pided'])) {
+
+                $res = $user->delFamily($param['id']);
+                if (!$res) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '删除用户失败']);
+                    die();
+                }
+                $res1 = $user->getFamily1($param['pid'], $param['id']);
+                if (!$res1) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '删除用户失败']);
+                    die();
+                }
+            }
+            unset($param['pided']);
+
             if (empty($param['password'])) {
                 unset($param['password']);
             } else {
@@ -185,26 +287,59 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $deptModel = new DeptModel();
-        $dept = $deptModel->getTree();
-        $dept1 = $dept;
-        foreach ($dept as $key => $vo) {
+        $id = input('param.id');
+        $user = $userModel->getOneUser($id);
 
-            $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
+        if ($self['typeid'] == 3) {
+
+            //获取一个管理员角色
+            $role = new UserType();
+            $roles = $role->getOneRole($self['typeid']);
+
+            //获取部门
+            $deptModel = new DeptModel();
+            $self['deptname'] = $deptModel->getOneDept($self['deptid'])['deptname'];
+
+            //获取所属部门
+            $dept = $deptModel->getTree($self['deptid']);
+            foreach ($dept as $key => $vo) {
+                $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
+            }
+            $this->assign([
+                'role' => $roles,
+                'status' => config('user_status'),
+                'dept' => $dept,
+                'self' => $self,
+                'user' => $user,
+            ]);
+
+        } else {
+            //角色
+            $role = new UserType();
+            $roles = $role->getRole();
+
+            //查询所有属于合作商的用户
+            $users = $userModel->getAllUser();
+
+            //所有部门\
+            $parent = $userModel->getOneUser($user['pid']);
+            $deptModel = new DeptModel();
+            $dept = $deptModel->getTree($parent['deptid']);
+            foreach ($dept as $key => $vo) {
+                $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
+            }
+
+            $this->assign([
+                'role' => $roles,
+                'status' => config('user_status'),
+                'users' => $users,
+                'dept' => $dept,
+                'self' => $self,
+                'user' => $user,
+            ]);
+
         }
 
-        $id = input('param.id');
-        $user = $user->getOneUser($id);
-        $role = new UserType();
-        $this->assign([
-            'user' => $user,
-            'status' => config('user_status'),
-            'role' => $role->getRole(),
-            'parent' => $user['pid'] != 0 ? $user->getOneUser($user['pid']) : '',
-            'self' => $user->getOneUser(session('id')),
-            'dept' => $dept,
-            'dept1' => $dept1,
-        ]);
         return $this->fetch();
     }
 
@@ -221,10 +356,14 @@ class User extends Base
             die();
         }
 
-        $flag = $UserModel->delUser($id);
-        if ($flag['code'] == 1) {
-            $user->delFamily($id);
+        $res = $UserModel->delFamily($id);
+        if ($res) {
+            $flag = $UserModel->delUser($id);
+        } else {
+            return json(['code' => 0, 'data' => '', 'msg' => '删除用户失败']);
+            die();
         }
+
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
     /**

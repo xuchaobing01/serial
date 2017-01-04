@@ -38,13 +38,13 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">生成数量：</label>
                             <div class="input-group col-sm-4">
-                                <input id="number" type="number" class="form-control" name="number" required="" aria-required="true">
+                                <input id="number" type="number" class="form-control" name="number" min="0" max="{$self.maxnum}" required="" aria-required="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">允许使用次数：</label>
                             <div class="input-group col-sm-4">
-                                <input id="times" type="number" class="form-control" name="times" required="" aria-required="true">
+                                <input id="times" type="number" class="form-control" name="times" min="0" max="{$self.maxtimes}" required="" aria-required="true">
                             </div>
                         </div>
                         <div class="form-group">
@@ -76,6 +76,26 @@
 
     //表单提交
     function toVaild(){
+        var number=$.trim($('#number').val());
+        if(!/^[0-9]+$/.test(number)){
+            swal("生成数量只能是数字", "", "error");
+            return false;
+        }
+        if((number<=0)||number>{$self.maxnum}){
+            swal("生成数量只能只能在0到"+{$self.maxnum}+"之间", "", "error");
+            return false;
+        }
+    
+        var times=$.trim($('#times').val());
+        if(!/^[0-9]+$/.test(times)){
+            swal("允许使用次数只能是数字", "", "error");
+            return false;
+        }
+        if((times<=0)||times>{$self.maxtimes}){
+            swal("允许使用次数只能只能在0到"+{$self.maxtimes}+"之间", "", "error");
+            return false;
+        }
+
         var jz;
         var url = "./serialAdd";
         $.ajax({

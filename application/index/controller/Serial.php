@@ -20,48 +20,95 @@ class Serial extends Base
     {
         if (request()->isAjax()) {
 
-            $param = input('param.');
+            //获取一个用户信息
+            $userModel = new UserModel();
+            $self = $userModel->getOneUser(session('id'));
 
-            $limit = $param['pageSize'];
-            $offset = ($param['pageNumber'] - 1) * $limit;
+            if ($self['typeid'] == 3) {
+                $param = input('param.');
 
-            $where = [];
-            if (isset($param['searchText']) && !empty($param['searchText'])) {
-                $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
-            }
+                $limit = $param['pageSize'];
+                $offset = ($param['pageNumber'] - 1) * $limit;
 
-            if ($_SESSION['think']['id'] != 1) {
-                $where['userid'] = $_SESSION['think']['id'];
-            }
-
-            $serial = new SerialModel();
-            $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
-
-            $status = config('serial_status');
-
-            foreach ($selectResult as $key => $vo) {
-
-                $selectResult[$key]['createtime'] = date('Y-m-d H:i:s', $vo['createtime']);
-
-                if ($vo['status'] == 1) {
-                    $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
+                $where = [];
+                if (!empty($self['son'])) {
+                    $self['son'] .= ',' . $self['id'];
                 } else {
-                    $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
+                    $self['son'] = $self['id'];
+                }
+                $where['snake_serial.userid'] = ['in', $self['son']];
+
+                if (isset($param['searchText']) && !empty($param['searchText'])) {
+                    $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
                 }
 
-                $operate = [
-                    //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
-                    '删除' => "javascript:serialDel('" . $vo['id'] . "')",
-                ];
+                $serial = new SerialModel();
+                $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
-                $selectResult[$key]['operate'] = showOperate($operate);
+                $status = config('serial_status');
 
+                foreach ($selectResult as $key => $vo) {
+
+                    $selectResult[$key]['createtime'] = date('Y-m-d H:i:s', $vo['createtime']);
+
+                    if ($vo['status'] == 1) {
+                        $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
+                    } else {
+                        $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
+                    }
+
+                    $operate = [
+                        //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
+                        '删除' => "javascript:serialDel('" . $vo['id'] . "')",
+                    ];
+
+                    $selectResult[$key]['operate'] = showOperate($operate);
+
+                }
+
+                $return['total'] = $serial->getAllSerials($where); //总数据
+                $return['rows'] = $selectResult;
+
+                return json($return);
+            } else {
+                $param = input('param.');
+
+                $limit = $param['pageSize'];
+                $offset = ($param['pageNumber'] - 1) * $limit;
+
+                $where = [];
+                if (isset($param['searchText']) && !empty($param['searchText'])) {
+                    $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
+                }
+                $serial = new SerialModel();
+                $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
+
+                $status = config('serial_status');
+
+                foreach ($selectResult as $key => $vo) {
+
+                    $selectResult[$key]['createtime'] = date('Y-m-d H:i:s', $vo['createtime']);
+
+                    if ($vo['status'] == 1) {
+                        $selectResult[$key]['status'] = '<span class="label label-success">' . $status[$vo['status']] . '</span>';
+                    } else {
+                        $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
+                    }
+
+                    $operate = [
+                        //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
+                        '删除' => "javascript:serialDel('" . $vo['id'] . "')",
+                    ];
+
+                    $selectResult[$key]['operate'] = showOperate($operate);
+
+                }
+
+                $return['total'] = $serial->getAllSerials($where); //总数据
+                $return['rows'] = $selectResult;
+
+                return json($return);
             }
-
-            $return['total'] = $serial->getAllSerials($where); //总数据
-            $return['rows'] = $selectResult;
-
-            return json($return);
         }
 
         return $this->fetch();
@@ -70,6 +117,7 @@ class Serial extends Base
     //系列号生成
     public function serialAdd()
     {
+
         if (request()->isPost()) {
 
             $param = input('param.');
@@ -91,6 +139,12 @@ class Serial extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
+        //获取一个用户信息
+        $userModel = new UserModel();
+        $self = $userModel->getOneUser(session('id'));
+        $this->assign([
+            'self' => $self,
+        ]);
         return $this->fetch();
     }
 
