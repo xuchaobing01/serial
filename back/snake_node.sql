@@ -11,7 +11,7 @@ CREATE TABLE `snake_node` (
   `style` varchar(155) DEFAULT '' COMMENT '菜单样式',
   `sort` smallint(4) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=75 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
 
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`,`sort`) values('1','用户管理','#','#','#','2','0','fa fa-users','2');
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`,`sort`) values('2','用户列表','admin','user','index','2','1','','0');
@@ -42,3 +42,4 @@ insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_n
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`,`sort`) values('72','添加部门','index','dept','deptadd','1','71','','0');
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`,`sort`) values('73','编辑部门','index','dept','deptedit','1','71','','0');
 insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`,`sort`) values('74','删除部门','index','dept','deptdel','1','71','','0');
+insert into `snake_node`(`id`,`node_name`,`module_name`,`control_name`,`action_name`,`is_menu`,`typeid`,`style`,`sort`) values('75','批量删除系列号','index','serial','serialdels','1','27','','0');

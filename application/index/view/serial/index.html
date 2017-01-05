@@ -56,7 +56,7 @@
         </div>
         <div class="ibox-content">
             <div class="form-group clearfix col-sm-1">
-                <button class="btn btn-danger" type="button"><i class="fa fa-trash-o"></i>&nbsp;批量删除选中项</button>
+                <button class="btn btn-danger" onclick="dellall();" type="button"><i class="fa fa-trash-o"  ></i>&nbsp;批量删除选中项</button>
                 <a href="./serialAdd"><button class="btn btn-primary" type="button"><i class="fa fa-plus"></i>&nbsp;系列号生成</button></a>
             </div>
             <!--搜索框开始-->
@@ -80,7 +80,7 @@
                     <table id="cusTable" data-height="700">
                         <thead>
                         <th data-field="checkall">
-                            <label><input type="checkbox" class="checkhand" value="option1" id="inlineCheckbox1">&nbsp;&nbsp;全选</label>
+                            <label><input type="checkbox" class="checkhand" onclick="chkallint(this);" >&nbsp;&nbsp;全选</label>
                         </th>
                         <th data-field="id">ID</th>
                         <th data-field="serial">系列号</th>
@@ -170,7 +170,37 @@
         })
 
     }
-
+   
+</script>
+<script>
+    //全选
+    function chkallint(obj){
+        $("input[name='subChk']").prop("checked",obj.checked);  
+    }
+    //批量删除
+    function dellall(){
+        // 判断是否至少选择一项 
+        var checkedNum = $("input[name='subChk']:checked").length; 
+        if(checkedNum == 0) { 
+            layer.alert('请选择至少一项!');
+            return; 
+        } 
+        layer.confirm('确定要删除所选项目?', {icon: 3, title:'提示'}, function(index){
+            var checkedList = new Array(); 
+            $("input[name='subChk']:checked").each(function() { 
+                checkedList.push($(this).val());
+            });
+            $.post("./serialDels",{'delitems':checkedList.toString()},function(res){
+                if(res.code == 1){
+                    layer.alert('删除成功');
+                    initTable();
+                }else{
+                    layer.alert('删除失败');
+                }
+            });
+            layer.close(index);
+        })
+    }
 </script>
 </body>
 </html>

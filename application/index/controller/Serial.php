@@ -22,12 +22,12 @@ class Serial extends Base
 
             //获取一个用户信息
             $userModel = new UserModel();
-            $self = $userModel->getOneUser(session('id'));
+            $self      = $userModel->getOneUser(session('id'));
 
             if ($self['typeid'] == 3) {
                 $param = input('param.');
 
-                $limit = $param['pageSize'];
+                $limit  = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
                 $where = [];
@@ -42,7 +42,7 @@ class Serial extends Base
                     $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
                 }
 
-                $serial = new SerialModel();
+                $serial       = new SerialModel();
                 $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
                 $status = config('serial_status');
@@ -56,7 +56,7 @@ class Serial extends Base
                     } else {
                         $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
                     }
-                    $selectResult[$key]['checkall'] = '<input type="checkbox" class="checkhand" value="' . $vo['id'] . '" >';
+                    $selectResult[$key]['checkall'] = '<input type="checkbox" class="checkhand" name="subChk" value="' . $vo['id'] . '" >';
 
                     $operate = [
                         //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
@@ -68,20 +68,20 @@ class Serial extends Base
                 }
 
                 $return['total'] = $serial->getAllSerials($where); //总数据
-                $return['rows'] = $selectResult;
+                $return['rows']  = $selectResult;
 
                 return json($return);
             } else {
                 $param = input('param.');
 
-                $limit = $param['pageSize'];
+                $limit  = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
                 $where = [];
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
                 }
-                $serial = new SerialModel();
+                $serial       = new SerialModel();
                 $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
                 $status = config('serial_status');
@@ -96,7 +96,7 @@ class Serial extends Base
                         $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
                     }
 
-                    $selectResult[$key]['checkall'] = '<input type="checkbox" class="checkhand" value="' . $vo['id'] . '" >';
+                    $selectResult[$key]['checkall'] = '<input type="checkbox" class="checkhand" name="subChk" value="' . $vo['id'] . '" >';
 
                     $operate = [
                         //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
@@ -108,7 +108,7 @@ class Serial extends Base
                 }
 
                 $return['total'] = $serial->getAllSerials($where); //总数据
-                $return['rows'] = $selectResult;
+                $return['rows']  = $selectResult;
 
                 return json($return);
             }
@@ -126,16 +126,16 @@ class Serial extends Base
             $param = input('param.');
             $param = parseParams($param['data']);
 
-            $userid = $_SESSION['think']['id'];
-            $serial = new SerialModel();
+            $userid    = $_SESSION['think']['id'];
+            $serial    = new SerialModel();
             $serialArr = $serial->createSerial($param['number']);
             $serialArr = $serial->completeSerialArr($serialArr, $param['times']);
 
             $flag = $serial->insertSerials($serialArr);
 
             $user = new UserModel();
-            $num = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
-            $num = $num[0];
+            $num  = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
+            $num  = $num[0];
             $num += $param['number'];
             $user->updateSerialNum($num);
 
@@ -144,7 +144,7 @@ class Serial extends Base
 
         //获取一个用户信息
         $userModel = new UserModel();
-        $self = $userModel->getOneUser(session('id'));
+        $self      = $userModel->getOneUser(session('id'));
         $this->assign([
             'self' => $self,
         ]);
@@ -183,11 +183,22 @@ class Serial extends Base
 
         $flag = $serial->delSerial($id);
 
-        $user = new UserModel();
-        $num = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
-        $num = $num[0];
+        $user   = new UserModel();
+        $num    = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
+        $num    = $num[0];
         $number = ($num > 0) ? ($num - 1) : 0;
         $user->updateSerialNum($number);
+
+        return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
+    }
+    //批量删除系列号
+    public function serialDels()
+    {
+        $serial = new SerialModel();
+
+        $ids = input("param.delitems");
+
+        $flag = $serial->delSerials($ids);
 
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }

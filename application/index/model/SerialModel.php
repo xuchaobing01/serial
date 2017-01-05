@@ -107,6 +107,22 @@ class SerialModel extends Model
             return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
         }
     }
+    /**
+     * 批量删除序列号
+     * @param $ids
+     */
+    public function delSerials($ids)
+    {
+        $where['id'] = ['in', $ids];
+        try {
+
+            $this->where($where)->delete();
+            return ['code' => 1, 'data' => '', 'msg' => '删除系列号成功'];
+
+        } catch (PDOException $e) {
+            return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
+        }
+    }
 
     /**
      * 生成序列号
@@ -117,7 +133,7 @@ class SerialModel extends Model
     public function createSerial($numbers, $length = 12)
     {
 
-        $str = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $str       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $serialArr = array();
         for ($i = 0; $i < $numbers; $i++) {
             $serial = $_SESSION['think']['id'];
@@ -138,8 +154,8 @@ class SerialModel extends Model
         foreach ($serialArr as $k => $v) {
             $serialArr[$k]['can_use_num'] = $times;
             $serialArr[$k]['surplus_num'] = $times;
-            $serialArr[$k]['createtime'] = time();
-            $serialArr[$k]['userid'] = $_SESSION['think']['id'];
+            $serialArr[$k]['createtime']  = time();
+            $serialArr[$k]['userid']      = $_SESSION['think']['id'];
         }
 
         return $serialArr;
