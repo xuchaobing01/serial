@@ -56,6 +56,7 @@ class Serial extends Base
                     } else {
                         $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
                     }
+                    $selectResult[$key]['checkall'] = '<input type="checkbox" class="checkhand" value="' . $vo['id'] . '" >';
 
                     $operate = [
                         //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
@@ -94,6 +95,8 @@ class Serial extends Base
                     } else {
                         $selectResult[$key]['status'] = '<span class="label label-danger">' . $status[$vo['status']] . '</span>';
                     }
+
+                    $selectResult[$key]['checkall'] = '<input type="checkbox" class="checkhand" value="' . $vo['id'] . '" >';
 
                     $operate = [
                         //'编辑' => url('serial/serialEdit', ['id' => $vo['id']]),
