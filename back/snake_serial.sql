@@ -10,11 +10,9 @@ CREATE TABLE `snake_serial` (
   `status` int(2) DEFAULT '1' COMMENT '状态1有效2失效',
   `userid` int(11) DEFAULT '0' COMMENT '用户表user的id号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('1','11CNE03WRFG7I','4','4','0','1480573435','2','1');
-insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('2','1GRYBWHD9VXCJ','20','4','16','1480573435','1','1');
-insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('3','1K9P0ZJBM6QWD','20','0','20','1480573435','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('4','1DS4N3GF51C7T','20','0','20','1480573435','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('5','1K0FQO7B35RYX','20','0','20','1480573435','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('6','16AJXE58FTU0S','20','0','20','1480573435','1','1');
@@ -47,3 +45,10 @@ insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('33','27C60IGYDT5AWU','5','0','5','1483525749','1','27');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('34','27U2TI1NDHQZ7J','5','0','5','1483525749','1','27');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('35','27OGFCV9YDNSP1','5','0','5','1483525749','1','27');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('56','66VOI5JAHGU03D','5','0','5','1483669040','1','66');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('57','66VEG2F6UPAS8X','5','0','5','1483669040','1','66');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('58','66B6W1EYJ5I9C8','5','0','5','1483669040','1','66');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('59','66KITH30SC7MR9','5','0','5','1483669040','1','66');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('60','6668CR9NEDPKM7','5','0','5','1483669040','1','66');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('61','66L5DZN3CMSG4O','5','0','5','1483669040','1','66');
+insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('62','66ROFKMN0LGW5U','5','0','5','1483669040','1','66');

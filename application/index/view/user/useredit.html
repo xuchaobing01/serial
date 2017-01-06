@@ -303,7 +303,8 @@
     {if condition="($self.typeid != 3)"}
     $("#pid").change(function(){
         if($(this).val()!=0){
-            $.getJSON('/index.php?s=index/api/getMaxByUserId', {'id' : $(this).val()}, function(res){
+            //$.getJSON('/index.php?s=index/api/getMaxByUserId', {'id' : $(this).val()},
+            $.getJSON("{:url('index/api/getMaxByUserId')}", {'id' : $(this).val()}, function(res){
                 if(res){
                     $('#maxtimes').val(res.maxtimes);
                     $('#maxnum').val(res.maxnum);
@@ -311,7 +312,8 @@
                     layer.alert("操作失败");
                 }
             });
-            $.getJSON('/index.php?s=index/api/getDeptByUserId', {'id' : $(this).val()}, function(res){
+            //$.getJSON('/index.php?s=index/api/getDeptByUserId', {'id' : $(this).val()},
+            $.getJSON("{:url('index/api/getDeptByUserId')}", {'id' : $(this).val()}, function(res){
                 if(res){
                     var html='<option value="0">--请选择--</option>';
                     $.each(res, function(i, value) {
@@ -339,7 +341,8 @@
             $('#maxtimes').val(0);
             $('#maxnum').val(0);
         }else{
-            $.getJSON('/index.php?s=index/api/getAllUser1', {}, function(res){
+            //$.getJSON('/index.php?s=index/api/getAllUser1', {}, function(res){
+            $.getJSON("{:url('index/api/getAllUser1')}", {}, function(res){
                 if(res){
                     var html='<option value="0">--请选择--</option>';
                     $.each(res, function(i, value) {
