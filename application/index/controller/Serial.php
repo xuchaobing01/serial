@@ -42,6 +42,10 @@ class Serial extends Base
                     $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
                 }
 
+                if (isset($param['searchText1']) && !empty($param['searchText1'])) {
+                    $where['snake_user.username'] = ['like', '%' . $param['searchText1'] . '%'];
+                }
+
                 $serial       = new SerialModel();
                 $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
@@ -81,6 +85,10 @@ class Serial extends Base
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['serial'] = ['like', '%' . $param['searchText'] . '%'];
                 }
+                if (isset($param['searchText1']) && !empty($param['searchText1'])) {
+                    $where['snake_user.username'] = ['like', '%' . $param['searchText1'] . '%'];
+                }
+
                 $serial       = new SerialModel();
                 $selectResult = $serial->getSerialsByWhere($where, $offset, $limit);
 
@@ -134,10 +142,10 @@ class Serial extends Base
             $flag = $serial->insertSerials($serialArr);
 
             $user = new UserModel();
-            $num  = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
+            $num  = $user->where('id=' . $userid)->column('serialnum');
             $num  = $num[0];
             $num += $param['number'];
-            $user->updateSerialNum($num);
+            $user->updateSerialNumByUserId($num, $userid);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
@@ -181,13 +189,15 @@ class Serial extends Base
 
         $serial = new SerialModel();
 
+        $userid = $serial->field('userid')->where('id=' . $id)->find()['userid'];
+
         $flag = $serial->delSerial($id);
 
         $user   = new UserModel();
-        $num    = $user->where('id=' . $_SESSION['think']['id'])->column('serialnum');
+        $num    = $user->where('id=' . $userid)->column('serialnum');
         $num    = $num[0];
         $number = ($num > 0) ? ($num - 1) : 0;
-        $user->updateSerialNum($number);
+        $user->updateSerialNumByUserId($number, $userid);
 
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
@@ -198,8 +208,21 @@ class Serial extends Base
 
         $ids = input("param.delitems");
 
+        $where['id'] = ['in', $ids];
+        $arr         = $serial->field('userid,count(*) as sumnum')->where($where)->group('userid')->select();
+
         $flag = $serial->delSerials($ids);
 
+        //跟新用户的系列号总数
+        if ($flag['code'] == 1) {
+            $user = new UserModel();
+            foreach ($arr as $k => $v) {
+                $number = $serial->where('userid=' . $v['userid'] . " and status=1")->count();
+
+                $user->updateSerialNumByUserId($number, $v['userid']);
+                unset($number);
+            }
+        }
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
 }

@@ -109,13 +109,35 @@ class UserModel extends Model
     /**
      * 更新用户的系列号数量
      */
-    public function updateSerialNum($num)
+    // public function updateSerialNum($num)
+    // {
+
+    //     try {
+
+    //         $result = $this->save(['serialnum' => $num], ['id' => $_SESSION['think']['id']]);
+
+    //         if (false === $result) {
+    //             // 验证失败 输出错误信息
+    //             return ['code' => 0, 'data' => '', 'msg' => $this->getError()];
+    //         } else {
+
+    //             return ['code' => 1, 'data' => '', 'msg' => '更新数据成功！'];
+    //         }
+    //     } catch (PDOException $e) {
+    //         return ['code' => 0, 'data' => '', 'msg' => $e->getMessage()];
+    //     }
+    // }
+
+    /**
+     * 更新用户的系列号数量
+     */
+    public function updateSerialNumByUserId($num, $userid)
     {
 
         try {
 
-            $result = $this->save(['serialnum' => $num], ['id' => $_SESSION['think']['id']]);
-
+            //$result = $this->save(['serialnum' => $num], ['id' => $userid]);
+            $result = $this->where('id', $userid)->update(['serialnum' => $num]);
             if (false === $result) {
                 // 验证失败 输出错误信息
                 return ['code' => 0, 'data' => '', 'msg' => $this->getError()];
@@ -192,9 +214,9 @@ class UserModel extends Model
             $pid = $pid['pid'];
 
             if ($pid != 0) {
-                $sons = $this->field('son')->where('id', $pid)->find()['son'];
+                $sons    = $this->field('son')->where('id', $pid)->find()['son'];
                 $sonsArr = explode(",", $sons);
-                $key = array_search($id, $sonsArr);
+                $key     = array_search($id, $sonsArr);
                 if ($key !== false) {
                     unset($sonsArr[$key]);
                 }

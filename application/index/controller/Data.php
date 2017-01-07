@@ -15,19 +15,21 @@ class Data extends Base
     //备份首页列表
     public function index()
     {
+        $database = config("database.database");
+        $str      = "Tables_in_" . $database;
 
         $tables = db()->query('show tables');
         foreach ($tables as $key => $vo) {
-            $sql = "select count(0) as alls from " . $vo['Tables_in_snake'];
+            $sql                  = "select count(0) as alls from " . $vo[$str];
             $tables[$key]['alls'] = db()->query($sql)['0']['alls'];
 
             $operate = [
-                '备份' => "javascript:importData('" . $vo['Tables_in_snake'] . "', " . $tables[$key]['alls'] . ")",
-                '还原' => "javascript:backData('" . $vo['Tables_in_snake'] . "')",
+                '备份' => "javascript:importData('" . $vo[$str] . "', " . $tables[$key]['alls'] . ")",
+                '还原' => "javascript:backData('" . $vo[$str] . "')",
             ];
             $tables[$key]['operate'] = showOperate($operate);
-            if (file_exists(config('back_path') . $vo['Tables_in_snake'] . ".sql")) {
-                $tables[$key]['ctime'] = date('Y-m-d H:i:s', filemtime(config('back_path') . $vo['Tables_in_snake'] . ".sql"));
+            if (file_exists(config('back_path') . $vo[$str] . ".sql")) {
+                $tables[$key]['ctime'] = date('Y-m-d H:i:s', filemtime(config('back_path') . $vo[$str] . ".sql"));
             } else {
                 $tables[$key]['ctime'] = '无';
             }
@@ -66,7 +68,7 @@ class Data extends Base
         }
 
         $filename = config('back_path') . $table . ".sql";
-        $fp = fopen($filename, 'w');
+        $fp       = fopen($filename, 'w');
         fputs($fp, $sqlStr);
         fclose($fp);
 

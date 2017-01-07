@@ -91,6 +91,9 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-4 control-label">所属部门：</label>
+                            {if condition="($self.id == $user.id)"}
+                                {$self.deptname}
+                            {else}
                             <div class="input-group col-sm-4">
                                 <select class="form-control" name="deptid" id="deptid" required="" aria-required="true">
                                     <option value="0">--请选择--</option>
@@ -101,6 +104,7 @@
                                     {/if}
                                 </select>
                             </div>
+                            {/if}
                         </div>
                         {else}
                         <div class="form-group">
@@ -170,6 +174,11 @@
 
                         <div class="form-group">
                             <label class="col-sm-4 control-label">是否启用：</label>
+                            {if condition="($self.id == $user.id)"}
+                                {foreach name='status' item='vo' key='key'}
+                                {if condition="$key == $user['status'] " }{$vo}{/if} 
+                                {/foreach}
+                            {else}
                             <div class="input-group col-sm-4">
                                 {foreach name='status' item='vo' key='key'}
                                 <div class="radio i-checks col-sm-4">
@@ -178,6 +187,7 @@
                                 </div>
                                 {/foreach}
                             </div>
+                            {/if}
                         </div>
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-4">

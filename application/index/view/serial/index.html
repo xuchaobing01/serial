@@ -64,6 +64,10 @@
                 <div class="content clearfix m-b">
                     <div class="form-group">
                         <label>系列号名称：</label>
+                        <input type="text" class="form-control" id="serialname" name="serialname">
+                    </div>
+                    <div class="form-group">
+                        <label>用户名称：</label>
                         <input type="text" class="form-control" id="username" name="username">
                     </div>
                     <div class="form-group">
@@ -133,7 +137,8 @@
                 var param = {
                     pageNumber: params.pageNumber,
                     pageSize: params.pageSize,
-                    searchText:$('#username').val()
+                    searchText:$('#serialname').val(),
+                    searchText1:$('#username').val()
                 };
                 return param;
             },

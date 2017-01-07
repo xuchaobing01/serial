@@ -35,7 +35,8 @@ class SerialModel extends Model
      */
     public function getAllSerials($where)
     {
-        return $this->where($where)->count();
+        //return $this->where($where)->count();
+        return $this->join('snake_user', 'snake_user.id = snake_serial.userid')->where($where)->count();
     }
 
     /**

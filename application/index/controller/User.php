@@ -22,24 +22,29 @@ class User extends Base
         if (request()->isAjax()) {
             //获取一个用户信息
             $userModel = new UserModel();
-            $self = $userModel->getOneUser(session('id'));
+            $self      = $userModel->getOneUser(session('id'));
 
             if ($self['typeid'] == 3) {
                 $param = input('param.');
 
-                $limit = $param['pageSize'];
+                $limit  = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
                 $where = [];
+                if (!empty($self['son'])) {
+                    $self['son'] .= ',' . $self['id'];
+                } else {
+                    $self['son'] = $self['id'];
+                }
                 $where['snake_user.id'] = ['in', $self['son']];
 
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['username'] = ['like', '%' . $param['searchText'] . '%'];
                 }
-                $user = new UserModel();
+                $user         = new UserModel();
                 $selectResult = $user->getUsersByWhere($where, $offset, $limit);
-                $dept = new DeptModel();
-                $status = config('user_status');
+                $dept         = new DeptModel();
+                $status       = config('user_status');
 
                 foreach ($selectResult as $key => $vo) {
                     if ($vo['last_login_time']) {
@@ -77,7 +82,7 @@ class User extends Base
                 }
 
                 $return['total'] = $user->getAllUsers($where); //总数据
-                $return['rows'] = $selectResult;
+                $return['rows']  = $selectResult;
 
                 return json($return);
 
@@ -85,17 +90,17 @@ class User extends Base
 
                 $param = input('param.');
 
-                $limit = $param['pageSize'];
+                $limit  = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
                 $where = [];
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['username'] = ['like', '%' . $param['searchText'] . '%'];
                 }
-                $user = new UserModel();
+                $user         = new UserModel();
                 $selectResult = $user->getUsersByWhere($where, $offset, $limit);
-                $dept = new DeptModel();
-                $status = config('user_status');
+                $dept         = new DeptModel();
+                $status       = config('user_status');
 
                 foreach ($selectResult as $key => $vo) {
                     if ($vo['last_login_time']) {
@@ -133,7 +138,7 @@ class User extends Base
                 }
 
                 $return['total'] = $user->getAllUsers($where); //总数据
-                $return['rows'] = $selectResult;
+                $return['rows']  = $selectResult;
 
                 return json($return);
             }
@@ -171,7 +176,7 @@ class User extends Base
             }
 
             $param['password'] = md5($param['password']);
-            $flag = $user->insertUser($param);
+            $flag              = $user->insertUser($param);
 
             if (($flag['code'] == 1) && ($flag['data'] > 0)) {
                 $user->getFamily($flag['data']);
@@ -181,16 +186,16 @@ class User extends Base
 
         //获取一个用户信息
         $userModel = new UserModel();
-        $self = $userModel->getOneUser(session('id'));
+        $self      = $userModel->getOneUser(session('id'));
 
         if ($self['typeid'] == 3) {
 
             //获取一个管理员角色
-            $role = new UserType();
+            $role  = new UserType();
             $roles = $role->getOneRole($self['typeid']);
 
             //获取部门
-            $deptModel = new DeptModel();
+            $deptModel        = new DeptModel();
             $self['deptname'] = $deptModel->getOneDept($self['deptid'])['deptname'];
 
             //获取所属部门
@@ -199,15 +204,15 @@ class User extends Base
                 $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
             }
             $this->assign([
-                'role' => $roles,
+                'role'   => $roles,
                 'status' => config('user_status'),
-                'dept' => $dept,
-                'self' => $self,
+                'dept'   => $dept,
+                'self'   => $self,
             ]);
 
         } else {
             //角色
-            $role = new UserType();
+            $role  = new UserType();
             $roles = $role->getRole();
 
             //查询所有属于合作商的用户
@@ -215,17 +220,17 @@ class User extends Base
 
             //所有部门
             $deptModel = new DeptModel();
-            $dept = $deptModel->getTree();
+            $dept      = $deptModel->getTree();
             foreach ($dept as $key => $vo) {
                 $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
             }
 
             $this->assign([
-                'role' => $roles,
+                'role'   => $roles,
                 'status' => config('user_status'),
-                'users' => $users,
-                'dept' => $dept,
-                'self' => $self,
+                'users'  => $users,
+                'dept'   => $dept,
+                'self'   => $self,
             ]);
 
         }
@@ -238,7 +243,7 @@ class User extends Base
     {
         //获取一个用户信息
         $userModel = new UserModel();
-        $self = $userModel->getOneUser(session('id'));
+        $self      = $userModel->getOneUser(session('id'));
 
         if (request()->isPost()) {
 
@@ -287,17 +292,17 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $id = input('param.id');
+        $id   = input('param.id');
         $user = $userModel->getOneUser($id);
 
         if ($self['typeid'] == 3) {
 
             //获取一个管理员角色
-            $role = new UserType();
+            $role  = new UserType();
             $roles = $role->getOneRole($self['typeid']);
 
             //获取部门
-            $deptModel = new DeptModel();
+            $deptModel        = new DeptModel();
             $self['deptname'] = $deptModel->getOneDept($self['deptid'])['deptname'];
 
             //获取所属部门
@@ -306,36 +311,36 @@ class User extends Base
                 $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
             }
             $this->assign([
-                'role' => $roles,
+                'role'   => $roles,
                 'status' => config('user_status'),
-                'dept' => $dept,
-                'self' => $self,
-                'user' => $user,
+                'dept'   => $dept,
+                'self'   => $self,
+                'user'   => $user,
             ]);
 
         } else {
             //角色
-            $role = new UserType();
+            $role  = new UserType();
             $roles = $role->getRole();
 
             //查询所有属于合作商的用户
             $users = $userModel->getAllUser();
 
             //所有部门\
-            $parent = $userModel->getOneUser($user['pid']);
+            $parent    = $userModel->getOneUser($user['pid']);
             $deptModel = new DeptModel();
-            $dept = $deptModel->getTree($parent['deptid']);
+            $dept      = $deptModel->getTree($parent['deptid']);
             foreach ($dept as $key => $vo) {
                 $dept[$key]['deptname'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['deptname'];
             }
 
             $this->assign([
-                'role' => $roles,
+                'role'   => $roles,
                 'status' => config('user_status'),
-                'users' => $users,
-                'dept' => $dept,
-                'self' => $self,
-                'user' => $user,
+                'users'  => $users,
+                'dept'   => $dept,
+                'self'   => $self,
+                'user'   => $user,
             ]);
 
         }
