@@ -20,36 +20,30 @@ class Role extends Base
     {
         if (request()->isAjax()) {
 
-            $param = input('param.');
-
-            $limit = $param['pageSize'];
-            $offset = ($param['pageNumber'] - 1) * $limit;
-
-            $where = [];
-            if (isset($param['searchText']) && !empty($param['searchText'])) {
-                $where['rolename'] = ['like', '%' . $param['searchText'] . '%'];
-            }
-            $user = new UserType();
-            $selectResult = $user->getRoleByWhere($where, $offset, $limit);
+            $user         = new UserType();
+            $selectResult = $user->getTree();
 
             foreach ($selectResult as $key => $vo) {
 
+                //操作
                 if (1 == $vo['id']) {
                     $selectResult[$key]['operate'] = '';
-                    continue;
+                } else {
+                    $operate = [
+                        '编辑'       => url('role/roleEdit', ['id' => $vo['id']]),
+                        '删除'       => "javascript:roleDel('" . $vo['id'] . "')",
+                        '分配权限' => "javascript:giveQx('" . $vo['id'] . "')",
+                    ];
+                    $selectResult[$key]['operate'] = showOperate($operate);
                 }
 
-                $operate = [
-                    '编辑' => url('role/roleEdit', ['id' => $vo['id']]),
-                    '删除' => "javascript:roleDel('" . $vo['id'] . "')",
-                    '分配权限' => "javascript:giveQx('" . $vo['id'] . "')",
-                ];
-                $selectResult[$key]['operate'] = showOperate($operate);
+                //分层显示
+                $selectResult[$key]['rolename'] = '<span class="lev" >' . str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└' : '') . str_repeat('----', $vo['lev']) . '</span>' . $vo['rolename'];
 
             }
 
-            $return['total'] = $user->getAllRole($where); //总数据
-            $return['rows'] = $selectResult;
+            $return['total'] = $user->getAllRole(); //总数据
+            $return['rows']  = $selectResult;
 
             return json($return);
         }
@@ -71,6 +65,18 @@ class Role extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
+        $user         = new UserType();
+        $selectResult = $user->getTree();
+
+        foreach ($selectResult as $key => $vo) {
+
+            $selectResult[$key]['rolename'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['rolename'];
+        }
+
+        $this->assign([
+            'role' => $selectResult,
+        ]);
+
         return $this->fetch();
     }
 
@@ -89,9 +95,17 @@ class Role extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
+        $selectResult = $role->getTree();
+
+        foreach ($selectResult as $key => $vo) {
+
+            $selectResult[$key]['rolename'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['rolename'];
+        }
+
         $id = input('param.id');
         $this->assign([
-            'role' => $role->getOneRole($id),
+            'role'  => $role->getOneRole($id),
+            'roles' => $selectResult,
         ]);
         return $this->fetch();
     }
@@ -102,6 +116,13 @@ class Role extends Base
         $id = input('param.id');
 
         $role = new UserType();
+
+        $rs = $role->getSonById($id);
+        if (!empty($rs)) {
+            return json(['code' => 2, 'data' => '', 'msg' => '该部门下面有用户不可以删除']);
+            die();
+        }
+
         $flag = $role->delRole($id);
         return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
     }
@@ -110,7 +131,7 @@ class Role extends Base
     public function giveAccess()
     {
         $param = input('param.');
-        $node = new Node();
+        $node  = new Node();
         //获取现在的权限
         if ('get' == $param['type']) {
 
@@ -121,7 +142,7 @@ class Role extends Base
         if ('give' == $param['type']) {
 
             $doparam = [
-                'id' => $param['id'],
+                'id'   => $param['id'],
                 'rule' => $param['rule'],
             ];
             $user = new UserType();

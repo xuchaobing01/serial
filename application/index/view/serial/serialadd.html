@@ -38,8 +38,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">生成数量：</label>
                             <div class="input-group col-sm-4">
-                                <input id="number" type="number" style="width:60%" class="form-control" name="number" min="0" {if condition="($self.typeid == 3)"}max="{$self.maxnum}"{/if} required="" aria-required="true">
-                                {if condition="($self.typeid == 3)"}
+                                <input id="number" type="number" style="width:60%" class="form-control" name="number" min="0" {if condition="($self.typeid != 1)"}max="{$self.maxnum}"{/if} required="" aria-required="true">
+                                {if condition="($self.typeid != 1)"}
                                 <span class="label label-danger" style="float:left;line-height: 27px;margin-left:3px;" >限制0到{$self.maxnum}</span>
                                 {/if}
                             </div>
@@ -48,8 +48,8 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">允许使用次数：</label>
                             <div class="input-group col-sm-4">
-                                <input id="times" type="number" style="width:60%" class="form-control" name="times" min="0" {if condition="($self.typeid == 3)"}max="{$self.maxtimes}"{/if} required="" aria-required="true">
-                                {if condition="($self.typeid == 3)"}
+                                <input id="times" type="number" style="width:60%" class="form-control" name="times" min="0" {if condition="($self.typeid != 1)"}max="{$self.maxtimes}"{/if} required="" aria-required="true">
+                                {if condition="($self.typeid != 1)"}
                                 <span class="label label-danger" style="float:left;line-height: 27px;margin-left:3px;" >限制0到{$self.maxtimes}</span>
                                 {/if}
                             </div>
@@ -88,9 +88,15 @@
             swal("生成数量只能是数字", "", "error");
             return false;
         }
-        {if condition="($self.typeid == 3)"}
-        if((number<=0)||number>{$self.maxnum}){
-            swal("生成数量只能只能在0到"+{$self.maxnum}+"之间", "", "error");
+
+        if(number<=0){
+            swal("生成数量不能小于0", "", "error");
+            return false;
+        }
+
+        {if condition="($self.typeid != 1)"}
+        if(number>{$self.maxnum}){
+            swal("生成数量不能大于"+{$self.maxnum}, "", "error");
             return false;
         }
         {/if}
@@ -99,9 +105,13 @@
             swal("允许使用次数只能是数字", "", "error");
             return false;
         }
-        {if condition="($self.typeid == 3)"}
-        if((times<=0)||times>{$self.maxtimes}){
-            swal("允许使用次数只能只能在0到"+{$self.maxtimes}+"之间", "", "error");
+        if(times<=0){
+            swal("允许使用次数不能小于0", "", "error");
+            return false;
+        }
+        {if condition="($self.typeid != 1)"}
+        if(times>{$self.maxtimes}){
+            swal("允许使用次数不能大于"+{$self.maxtimes}, "", "error");
             return false;
         }
         {/if}

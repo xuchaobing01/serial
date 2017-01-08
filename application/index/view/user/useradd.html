@@ -41,29 +41,20 @@
                             </div>
                         </div>
 
-                        {if condition="($self.typeid == 3)"}
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">管理员角色：</label>
-                            <div class="input-group col-sm-4">
-                                <input id="typeid" type="hidden" class="form-control" name="typeid" required="" aria-required="true" value="{$role.id}">
-                                {$role.rolename}
-                            </div>
-                        </div>
-                        {else}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">管理员角色：</label>
                             <div class="input-group col-sm-4">
                                 <select class="form-control" id="typeids" name="typeid" required="" aria-required="true">
                                     <option value="0">--请选择--</option>
-                                    {if !empty($role)}
-                                    {foreach name="role" item="vo"}
-                                    <option value="{$vo.id}">{$vo.rolename}</option>
-                                    {/foreach}
-                                    {/if}
+                                        {if !empty($roles)}
+                                        {foreach name="roles" item="vo"}
+                                        <option value="{$vo.id}">{$vo.rolename}</option>
+                                        {/foreach}
+                                        {/if}
                                 </select>
+                                
                             </div>
                         </div>
-                        {/if}
 
                         <div class="form-group">
                             <label class="col-sm-4 control-label">登录密码：</label>
@@ -79,76 +70,15 @@
                             </div>
                         </div>
                         
-                        {if condition="($self.typeid == 3)"}
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">所属用户：</label>
-                            <div class="input-group col-sm-4">
-                                <div class="input-group col-sm-6">
-                                    {$self.deptname}--&nbsp{$self.username}
-                                    <input id="pid" type="hidden" class="form-control" name="pid" required="" aria-required="true" value="{$self.id}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">所属部门：</label>
-                            <div class="input-group col-sm-4">
-                                <select class="form-control" name="deptid" id="deptid" required="" aria-required="true">
-                                    <option value="0">--请选择--</option>
-                                    {if !empty($dept)}
-                                    {foreach name="dept" item="d"}
-                                    <option value="{$d.id}">{$d.deptname}</option>
-                                    {/foreach}
-                                    {/if}
-                                </select>
-                            </div>
-                        </div>
-                        {else}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">所属用户：</label>
                             <div class="input-group col-sm-4">
                                 <select class="form-control" name="pid" id="pid" required="" aria-required="true">
                                     <option value="0">--请选择--</option>
-                                    {if !empty($users)}
-                                    {foreach name="users" item="u"}
-                                    <option value="{$u.id}">{$u.username}</option>
-                                    {/foreach}
-                                    {/if}
                                 </select>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">所属部门：</label>
-                            <div class="input-group col-sm-4">
-                                <select class="form-control" name="deptid" id="deptid" required="" aria-required="true">
-                                    <option value="0">--请选择--</option>
-                                </select>
-                            </div>
-                        </div>
-                        {/if}
                         
-                        {if condition="($self.typeid == 3)"}
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">系列号最大生成数量：</label>
-                            <div class="input-group col-sm-4">
-                                <input type="hidden" class="form-control" name="maxnum" required="" aria-required="true" value="{$self.maxnum}">
-                                <span>
-                                    {$self.maxnum}
-                                </span>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">系列号最大使用次数：</label>
-                            <div class="input-group col-sm-4">
-                                <input type="hidden" class="form-control" name="maxtimes" required="" aria-required="true" value="{$self.maxtimes}" >
-                                <span>
-                                    {$self.maxtimes}
-                                </span>
-                            </div>
-                        </div>
-                        {else}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">系列号最大生成数量：</label>
                             <div class="input-group col-sm-4">
@@ -161,7 +91,6 @@
                                 <input id="maxtimes" type="number" class="form-control" name="maxtimes" required="" aria-required="true">
                             </div>
                         </div>
-                        {/if}
                         
                         <div class="form-group">
                             <label class="col-sm-4 control-label">是否启用：</label>
@@ -212,41 +141,28 @@
             layer.alert("密码不能为空");
             return false;
         }
+        if($("#typeids").val()<=0){
+            layer.alert("请选择管理员角色");
+            return false;
+        }
 
-        {if condition="($self.typeid == 3)"}
-            if($("#typeid").val()!=3){
-                layer.alert("管理员角色不正确");
+        if($("#typeids").val()!=1){
+            if($("#pid").val()<0){
+                layer.alert("请选择所属用户");
                 return false;
             }
-            if($("#deptid").val()<=0){
-                layer.alert("请选择所属部门,如果没有部门可选择,没有开通部门");
-                return false;
-            }
-        {else}
-            if($("#typeids").val()<=0){
-                layer.alert("请选择管理员角色");
-                return false;
-            }
-            if($("#typeids").val()==3){
-                if($("#pid").val()<=0){
+            {if condition="($self.typeid !=1)"}
+                if($("#pid").val()==0){
                     layer.alert("请选择所属用户");
                     return false;
                 }
-                if($("#deptid").val()<=0){
-                    layer.alert("请选择所属部门,如果没有部门可选择,没有开通部门");
-                    return false;
-                }
-            }else{
-                if($("#pid").val()!=0){
-                    layer.alert("管理员没有所属用户");
-                    return false;
-                }
-                if($("#deptid").val()!=0){
-                    layer.alert("管理员没有所属部门");
-                    return false;
-                }
+            {/if}
+        }else{
+            if($("#pid").val()!=0){
+                layer.alert("超级管理员没有所属用户");
+                return false;
             }
-        {/if}
+        }
 
         var jz;
         var url = "./userAdd";
@@ -298,11 +214,8 @@
 
 </script>
 <script type="text/javascript">
-    {if condition="($self.typeid != 3)"}
     $("#pid").change(function(){
         if($(this).val()!=0){
-            
-            //$.getJSON('/index.php?s=index/api/getMaxByUserId', {'id' : $(this).val()}, 
             $.getJSON("{:url('index/api/getMaxByUserId')}", {'id' : $(this).val()}, function(res){
                 if(res){
                     $('#maxtimes').val(res.maxtimes);
@@ -311,23 +224,7 @@
                     layer.alert("操作失败");
                 }
             });
-            //$.getJSON('/index.php?s=index/api/getDeptByUserId', {'id' : $(this).val()}, 
-            $.getJSON("{:url('index/api/getDeptByUserId')}", {'id' : $(this).val()}, function(res){
-                if(res){
-                    var html='<option value="0">--请选择--</option>';
-                    $.each(res, function(i, value) {
-                        var str='&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(value.lev);
-                        if(value.lev>0){
-                            str+='└----';
-                        }
-                        str+=value.deptname;
-                        html+='<option value="'+value.id+'">'+str+'</option>'
-                    });
-                    $('#deptid').html(html);
-                }else{
-                    layer.alert("操作失败");
-                }
-            });
+            
         }else{
             $('#maxtimes').val(0);
             $('#maxnum').val(0);
@@ -335,16 +232,18 @@
     })
     
     $("#typeids").change(function(){
-        if($(this).val()!=3&&$(this).val()!=0){
+        if($(this).val()==1||$(this).val()==0){
             $("#pid").html('<option value="0">--请选择--</option>');
-            $("#deptid").html('<option value="0">--请选择--</option>');
             $('#maxtimes').val(0);
             $('#maxnum').val(0);
         }else{
-            //$.getJSON('/index.php?s=index/api/getAllUser1', {}, function(res){
             $.getJSON("{:url('index/api/getAllUser1')}", {}, function(res){
                 if(res){
+                    {if condition="($self.typeid ==1)"}
+                    var html='<option value="0">--顶级用户--</option>';
+                    {else}
                     var html='<option value="0">--请选择--</option>';
+                    {/if}
                     $.each(res, function(i, value) {
                         html+='<option value="'+value.id+'">'+value.username+'</option>'
                     });
@@ -353,11 +252,10 @@
                     layer.alert("操作失败");
                 }
             });
-            $("#deptid").html('<option value="0">--请选择--</option>');
+            $('#maxtimes').val(0);
+            $('#maxnum').val(0);
         }
-    });  
-        
-    {/if}
+    })
 </script>
 </body>
 </html>

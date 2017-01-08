@@ -24,7 +24,7 @@ class Serial extends Base
             $userModel = new UserModel();
             $self      = $userModel->getOneUser(session('id'));
 
-            if ($self['typeid'] == 3) {
+            if ($self['typeid'] != 1) {
                 $param = input('param.');
 
                 $limit  = $param['pageSize'];

@@ -48,7 +48,7 @@ class Api extends Controller
         $id = input('param.id');
 
         $userModel = new UserModel();
-        $users = $userModel->getOneUser($id);
+        $users     = $userModel->getOneUser($id);
         return json($users);
     }
     public function getDeptByUserId()
@@ -56,16 +56,38 @@ class Api extends Controller
         $id = input('param.id');
 
         $userModel = new UserModel();
-        $deptid = $userModel->getOneUser($id)['deptid'];
+        $deptid    = $userModel->getOneUser($id)['deptid'];
 
         $deptModel = new DeptModel();
-        $depts = $deptModel->getTree($deptid);
+        $depts     = $deptModel->getTree($deptid);
         return json($depts);
     }
     public function getAllUser1()
     {
         $userModel = new UserModel();
-        $users = $userModel->getAllUser();
+
+        $self = $userModel->getOneUser(session('id'));
+
+        //查询所属用户
+        if ($self['typeid'] == 1) {
+            $where           = [];
+            $where['status'] = 1;
+            $where['typeid'] = ['<>', 1];
+            $users           = $userModel->getAllUser($where);
+        } else {
+            $where           = [];
+            $where['status'] = 1;
+            $where['typeid'] = ['<>', 1];
+            $self['son']     = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
+            $where['id']     = ['in', $self['son']];
+            $users           = $userModel->getAllUser($where);
+        }
         return json($users);
+    }
+    public function getAllDept1()
+    {
+        $deptModel = new DeptModel();
+        $depts     = $deptModel->getTree();
+        return json($depts);
     }
 }

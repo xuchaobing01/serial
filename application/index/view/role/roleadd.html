@@ -43,6 +43,20 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">上级角色：</label>
+                            <div class="input-group col-sm-4">
+                                <select class="form-control" name="pid" required="" id="pid" aria-required="true">
+                                    <option value="0">--请选择--</option>
+                                    {if !empty($role)}
+                                    {foreach name="role" item="vo"}
+                                    <option value="{$vo.id}">{$vo.rolename}</option>
+                                    {/foreach}
+                                    {/if}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-3">
                                 <!--<input type="button" value="提交" class="btn btn-primary" id="postform"/>-->
                                 <button class="btn btn-primary" type="submit">提交</button>
@@ -71,6 +85,12 @@
 
     //表单提交
     function toVaild(){
+
+        if($("#pid").val()==0){
+            layer.alert("请选择上级角色");
+            return false;
+        }
+
         var jz;
         var url = "./roleAdd";
         $.ajax({

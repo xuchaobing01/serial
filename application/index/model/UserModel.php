@@ -210,9 +210,7 @@ class UserModel extends Model
 
         $id = $cat_id;
         while ($cat_id > 0) {
-            $pid = $this->field('pid')->where('id', $cat_id)->find();
-            $pid = $pid['pid'];
-
+            $pid = $this->field('pid')->where('id', $cat_id)->find()['pid'];
             if ($pid != 0) {
                 $sons    = $this->field('son')->where('id', $pid)->find()['son'];
                 $sonsArr = explode(",", $sons);
@@ -223,6 +221,7 @@ class UserModel extends Model
                 $sons = implode(",", $sonsArr);
 
                 $this->query('UPDATE `snake_user` SET son = "' . $sons . '" where id=' . $pid);
+
             }
             $cat_id = $pid;
         }
@@ -234,9 +233,9 @@ class UserModel extends Model
         $user = $this->field('username')->where('id', $id)->find();
         return $user->username;
     }
-    public function getAllUser()
+    public function getAllUser($where)
     {
-        return $this->field('id,username')->where('typeid=3')->order('id desc')->select();
+        return $this->field('id,username')->where($where)->order('id asc')->select();
     }
 
 }

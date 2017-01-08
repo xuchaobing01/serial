@@ -28,11 +28,27 @@ class UserType extends Model
         return $this->where($where)->limit($offset, $limit)->order('id desc')->select();
     }
 
+    public function getTree($parent_id = 0, $lev = 0)
+    {
+        $tree = array();
+        $cats = $this->order('id desc')->select();
+
+        foreach ($cats as $c) {
+            if ($c['pid'] == $parent_id) {
+                $c['lev'] = $lev;
+                $tree[]   = $c; // 手机类型
+                $tree     = array_merge($tree, $this->getTree($c['id'], $lev + 1));
+            }
+        }
+
+        return $tree;
+    }
+
     /**
      * 根据搜索条件获取所有的角色数量
      * @param $where
      */
-    public function getAllRole($where)
+    public function getAllRole($where = "")
     {
         return $this->where($where)->count();
     }
@@ -91,6 +107,15 @@ class UserType extends Model
     }
 
     /**
+     * 根据角色id获取角色信息
+     * @param $id
+     */
+    public function getSonById($id)
+    {
+        return $this->where('pid', $id)->find();
+    }
+
+    /**
      * 删除角色
      * @param $id
      */
@@ -110,6 +135,12 @@ class UserType extends Model
     public function getRole()
     {
         return $this->select();
+    }
+
+    //获取角色信息
+    public function getRoleByWhere1($where)
+    {
+        return $this->where($where)->select();
     }
 
     //获取角色的权限节点
