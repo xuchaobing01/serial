@@ -44,6 +44,27 @@ class UserType extends Model
 
         return $tree;
     }
+    /**
+     * getFamily 获取上级,上上级,... 面包屑导航
+     */
+    public function getFamily($cat_id)
+    {
+        $fm = array();
+
+        $cats = $this->order('id desc')->select();
+
+        while ($cat_id > 0) {
+            foreach ($cats as $c) {
+                if ($c['id'] == $cat_id) {
+                    $fm[] = $c;
+                    $cat_id = $c['pid'];
+                    break;
+                }
+            }
+        }
+
+        return array_reverse($fm);
+    }
 
     /**
      * 根据搜索条件获取所有的角色数量

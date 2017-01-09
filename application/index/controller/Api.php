@@ -71,21 +71,30 @@ class Api extends Controller
 
         $typeid = input('param.typeid');
 
-        $rs = $role = new UserType();
-        $prole = $role->getOneRole($typeid)['pid'];
+        $role = new UserType();
+        $prole = $role->getFamily($typeid);
+        $ids = array();
+        foreach ($prole as $k => $v) {
+            if (($v['id'] != 1) && ($v['id'] != $typeid)) {
+                $ids[] = $v['id'];
+            }
+        }
+        $idstr = implode(",", $ids);
 
         //查询所属用户
         if ($self['typeid'] == 1) {
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = [['=', $prole], ['<>', 1]];
+            $where['typeid'] = ['in', $idstr];
+            //$where['typeid'] = [['=', $prole], ['<>', 1]];
             //$where['typeid'] = ['<>', 1];
             $users = $userModel->getAllUser($where);
         } else {
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = [['=', $prole], ['<>', 1]];
+            //$where['typeid'] = [['=', $prole], ['<>', 1]];
             //$where['typeid'] = ['<>', 1];
+            $where['typeid'] = ['in', $idstr];
             $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
             $where['id'] = ['in', $self['son']];
             $users = $userModel->getAllUser($where);
@@ -103,7 +112,7 @@ class Api extends Controller
     {
         $typeid = input('param.typeid');
 
-        $rs = $role = new UserType();
+        $role = new UserType();
         $prole = $role->getOneRole($typeid);
 
         return json($prole);

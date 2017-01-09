@@ -215,11 +215,22 @@ class User extends Base
             $where = [];
             $where['status'] = 1;
             $where['typeid'] = ['<>', 1];
+            //$where['typeid'] = ['in', $idstr];
             $users = $userModel->getAllUser($where);
         } else {
+            $prole = $role->getFamily($self['typeid']);
+            $ids = array();
+            foreach ($prole as $k => $v) {
+                if (($v['id'] != 1) && ($v['id'] != $self['typeid'])) {
+                    $ids[] = $v['id'];
+                }
+            }
+            $idstr = implode(",", $ids);
+
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = ['<>', 1];
+            //$where['typeid'] = ['<>', 1];
+            $where['typeid'] = ['in', $idstr];
             $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
             $where['id'] = ['in', $self['son']];
             $users = $userModel->getAllUser($where);
@@ -249,20 +260,18 @@ class User extends Base
             $param = input('post.');
             $param = parseParams($param['data']);
 
-            $usered = $userModel->getOneUser($param['id']);
-            if (!empty($usered['son'])) {
-                $usered['son'] .= ',' . $usered['id'];
-            } else {
-                $usered['son'] = $usered['id'];
-            }
-
-            if (preg_match('/' . $param['pid'] . '/', $usered['son'])) {
-                return json(['code' => 0, 'data' => '', 'msg' => '所属用户不能是自己或自己的下级用户']);
-                die();
-            }
-
             $parent = $userModel->getOneUser($param['pid']);
             if ($self['typeid'] != 1) {
+
+                if (!empty($self['son'])) {
+                    $self['son'] .= ',' . $self['id'];
+                } else {
+                    $self['son'] = $self['id'];
+                }
+                if (preg_match('/' . $param['pid'] . '/', $self['son'])) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '所属用户不能是自己或自己的下级用户']);
+                    die();
+                }
 
                 //所属角色
                 $role = new UserType();
@@ -297,6 +306,46 @@ class User extends Base
                 if ($param['maxnum'] > $parent['maxnum']) {
                     $param['maxnum'] = $parent['maxnum'];
                 }
+            } else {
+                $role = new UserType();
+                if (($param['typeid'] != 1)) {
+                    $pid1 = $role->getOneRole($param['typeid'])['pid'];
+                    if ($pid1 == 1) {
+                        if ($param['pid'] != 0) {
+                            $usered = $userModel->getOneUser($param['id']);
+                            if (!empty($usered['son'])) {
+                                $usered['son'] .= ',' . $usered['id'];
+                            } else {
+                                $usered['son'] = $usered['id'];
+                            }
+
+                            if (preg_match('/' . $param['pid'] . '/', $usered['son'])) {
+                                return json(['code' => 0, 'data' => '', 'msg' => '所属用户不能是自己或自己的下级用户']);
+                                die();
+                            }
+                        }
+
+                    } else {
+                        if ($param['pid'] == 0) {
+                            return json(['code' => 0, 'data' => '', 'msg' => '请选择所属用户']);
+                            die();
+                        }
+
+                        $usered = $userModel->getOneUser($param['id']);
+                        if (!empty($usered['son'])) {
+                            $usered['son'] .= ',' . $usered['id'];
+                        } else {
+                            $usered['son'] = $usered['id'];
+                        }
+
+                        if (preg_match('/' . $param['pid'] . '/', $usered['son'])) {
+                            return json(['code' => 0, 'data' => '', 'msg' => '所属用户不能是自己或自己的下级用户']);
+                            die();
+                        }
+                    }
+
+                }
+
             }
 
             if (($param['typeid'] != 1) && ($param['pid'] != $param['pided'])) {
@@ -342,19 +391,27 @@ class User extends Base
             $roles[$key]['rolename'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['rolename'];
         }
 
-        $prole = $role->getOneRole($user['typeid'])['pid'];
+        $prole = $role->getFamily($user['typeid']);
+        $ids = array();
+        foreach ($prole as $k => $v) {
+            if (($v['id'] != 1) && ($v['id'] != $user['typeid'])) {
+                $ids[] = $v['id'];
+            }
+        }
+
+        $idstr = implode(",", $ids);
         //查询所属用户
         if ($self['typeid'] == 1) {
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = [['=', $prole], ['<>', 1]];
-            //$where['typeid'] = ['<>', 1];
+            //$where['typeid'] = [['=', $prole], ['<>', 1]];
+            $where['typeid'] = ['in', $idstr];
             $users = $userModel->getAllUser($where);
         } else {
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = [['=', $prole], ['<>', 1]];
-            //$where['typeid'] = ['<>', 1];
+            //$where['typeid'] = [['=', $prole], ['<>', 1]];
+            $where['typeid'] = ['in', $idstr];
             $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
             $where['id'] = ['in', $self['son']];
             $users = $userModel->getAllUser($where);
