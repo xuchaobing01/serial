@@ -76,8 +76,7 @@
                             <div class="input-group col-sm-4">
                                 <input type="hidden" class="form-control" name="pided" required="" aria-required="true" value="{$user.pid}">
                                 <select class="form-control" name="pid" id="pid" required="" aria-required="true">
-
-                                    {if condition="$self['typeid'] eq 1"}
+                                    {if condition="$parentrole['pid'] eq 1"}
                                     <option value="0">--顶级用户--</option>
                                     {else}
                                     <option value="0">--请选择--</option>
@@ -253,17 +252,25 @@
             $('#maxtimes').val(0);
             $('#maxnum').val(0);
         }else{
-            $.getJSON("{:url('index/api/getAllUser1')}", {}, function(res){
+            $.getJSON("{:url('index/api/getAllUser1')}", {'typeid':$(this).val()}, function(res){
                 if(res){
-                    {if condition="($self.typeid ==1)"}
-                    var html='<option value="0">--顶级用户--</option>';
-                    {else}
-                    var html='<option value="0">--请选择--</option>';
-                    {/if}
-                    $.each(res, function(i, value) {
-                        html+='<option value="'+value.id+'">'+value.username+'</option>'
-                    });
-                    $('#pid').html(html);
+                    $.getJSON("{:url('index/api/getparent')}", {'typeid':$("#typeids").val()}, function(rs){
+
+                        if(rs.pid==1){
+                            var html='<option value="0">--顶级用户--</option>';
+                            $.each(res, function(i, value) {
+                                html+='<option value="'+value.id+'">'+value.username+'</option>'
+                            });
+                            $('#pid').html(html);
+
+                        }else{
+                            var html='<option value="0">--请选择--</option>';
+                            $.each(res, function(i, value) {
+                                html+='<option value="'+value.id+'">'+value.username+'</option>'
+                            });
+                            $('#pid').html(html);
+                        }
+                    }); 
                 }else{
                     layer.alert("操作失败");
                 }

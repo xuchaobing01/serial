@@ -12,6 +12,7 @@ namespace app\index\controller;
 
 use app\index\model\DeptModel;
 use app\index\model\UserModel;
+use app\index\model\UserType;
 use think\Controller;
 
 class Api extends Controller
@@ -48,7 +49,7 @@ class Api extends Controller
         $id = input('param.id');
 
         $userModel = new UserModel();
-        $users     = $userModel->getOneUser($id);
+        $users = $userModel->getOneUser($id);
         return json($users);
     }
     public function getDeptByUserId()
@@ -56,10 +57,10 @@ class Api extends Controller
         $id = input('param.id');
 
         $userModel = new UserModel();
-        $deptid    = $userModel->getOneUser($id)['deptid'];
+        $deptid = $userModel->getOneUser($id)['deptid'];
 
         $deptModel = new DeptModel();
-        $depts     = $deptModel->getTree($deptid);
+        $depts = $deptModel->getTree($deptid);
         return json($depts);
     }
     public function getAllUser1()
@@ -68,26 +69,43 @@ class Api extends Controller
 
         $self = $userModel->getOneUser(session('id'));
 
+        $typeid = input('param.typeid');
+
+        $rs = $role = new UserType();
+        $prole = $role->getOneRole($typeid)['pid'];
+
         //查询所属用户
         if ($self['typeid'] == 1) {
-            $where           = [];
+            $where = [];
             $where['status'] = 1;
-            $where['typeid'] = ['<>', 1];
-            $users           = $userModel->getAllUser($where);
+            $where['typeid'] = [['=', $prole], ['<>', 1]];
+            //$where['typeid'] = ['<>', 1];
+            $users = $userModel->getAllUser($where);
         } else {
-            $where           = [];
+            $where = [];
             $where['status'] = 1;
-            $where['typeid'] = ['<>', 1];
-            $self['son']     = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
-            $where['id']     = ['in', $self['son']];
-            $users           = $userModel->getAllUser($where);
+            $where['typeid'] = [['=', $prole], ['<>', 1]];
+            //$where['typeid'] = ['<>', 1];
+            $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
+            $where['id'] = ['in', $self['son']];
+            $users = $userModel->getAllUser($where);
         }
         return json($users);
     }
     public function getAllDept1()
     {
         $deptModel = new DeptModel();
-        $depts     = $deptModel->getTree();
+        $depts = $deptModel->getTree();
         return json($depts);
+    }
+
+    public function getparent()
+    {
+        $typeid = input('param.typeid');
+
+        $rs = $role = new UserType();
+        $prole = $role->getOneRole($typeid);
+
+        return json($prole);
     }
 }

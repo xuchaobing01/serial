@@ -334,21 +334,27 @@ class User extends Base
         } else {
             $roles = $role->getTree($self['typeid']);
         }
+
+        $parentrole = $role->getOneRole($user['typeid']);
+
         foreach ($roles as $key => $vo) {
 
             $roles[$key]['rolename'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['rolename'];
         }
 
+        $prole = $role->getOneRole($user['typeid'])['pid'];
         //查询所属用户
         if ($self['typeid'] == 1) {
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = ['<>', 1];
+            $where['typeid'] = [['=', $prole], ['<>', 1]];
+            //$where['typeid'] = ['<>', 1];
             $users = $userModel->getAllUser($where);
         } else {
             $where = [];
             $where['status'] = 1;
-            $where['typeid'] = ['<>', 1];
+            $where['typeid'] = [['=', $prole], ['<>', 1]];
+            //$where['typeid'] = ['<>', 1];
             $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
             $where['id'] = ['in', $self['son']];
             $users = $userModel->getAllUser($where);
@@ -360,6 +366,7 @@ class User extends Base
             'users' => $users,
             'self' => $self,
             'user' => $user,
+            'parentrole' => $parentrole,
         ]);
 
         return $this->fetch();
