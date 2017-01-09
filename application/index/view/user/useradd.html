@@ -75,6 +75,13 @@
                             <div class="input-group col-sm-4">
                                 <select class="form-control" name="pid" id="pid" required="" aria-required="true">
                                     <option value="0">--请选择--</option>
+                                    {if condition="($self.typeid !=1)"}
+                                        {if !empty($users)}
+                                        {foreach name="users" item="vo"}
+                                        <option value="{$vo.id}">{$vo.username}</option>
+                                        {/foreach}
+                                        {/if}
+                                    {/if}
                                 </select>
                             </div>
                         </div>

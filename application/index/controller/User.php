@@ -146,12 +146,42 @@ class User extends Base
             $user = new UserModel();
             $self = $user->getOneUser(session('id'));
 
+            //限制最大值
+            $parent = $user->getOneUser($param['pid']);
             if ($self['typeid'] != 1) {
-                if ($param['maxtimes'] != $self['maxtimes']) {
-                    $param['maxtimes'] = $self['maxtimes'];
+
+                //所属角色不能是自己的下级
+                $role = new UserType();
+                $selectResult = $role->getTree($self['typeid']);
+                $rolestatus = 1;
+                foreach ($selectResult as $k => $v) {
+                    if ($param['typeid'] == $v['id']) {
+                        $rolestatus = 2;
+                        break;
+                    }
                 }
-                if ($param['maxnum'] != $self['maxnum']) {
-                    $param['maxnum'] = $self['maxnum'];
+                if ($rolestatus == 1) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '所属角色不合法']);
+                    die();
+                }
+
+                //所属用户
+                $usered = $user->getOneUser($self['id']);
+                if (!empty($usered['son'])) {
+                    $usered['son'] .= ',' . $usered['id'];
+                } else {
+                    $usered['son'] = $usered['id'];
+                }
+                if (!preg_match('/' . $param['pid'] . '/', $usered['son'])) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '所属用户不合法']);
+                    die();
+                }
+
+                if ($param['maxtimes'] > $parent['maxtimes']) {
+                    $param['maxtimes'] = $parent['maxtimes'];
+                }
+                if ($param['maxnum'] > $parent['maxnum']) {
+                    $param['maxnum'] = $parent['maxnum'];
                 }
             }
 
@@ -231,12 +261,41 @@ class User extends Base
                 die();
             }
 
+            $parent = $userModel->getOneUser($param['pid']);
             if ($self['typeid'] != 1) {
-                if ($param['maxtimes'] != $self['maxtimes']) {
-                    $param['maxtimes'] = $self['maxtimes'];
+
+                //所属角色
+                $role = new UserType();
+                $selectResult = $role->getTree($self['typeid']);
+                $rolestatus = 1;
+                foreach ($selectResult as $k => $v) {
+                    if ($param['typeid'] == $v['id']) {
+                        $rolestatus = 2;
+                        break;
+                    }
                 }
-                if ($param['maxnum'] != $self['maxnum']) {
-                    $param['maxnum'] = $self['maxnum'];
+                if ($rolestatus == 1) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '所属角色不合法']);
+                    die();
+                }
+
+                //所属用户
+                $usered1 = $user->getOneUser($self['id']);
+                if (!empty($usered1['son'])) {
+                    $usered1['son'] .= ',' . $usered1['id'];
+                } else {
+                    $usered1['son'] = $usered1['id'];
+                }
+                if (!preg_match('/' . $param['pid'] . '/', $usered1['son'])) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '所属用户不合法']);
+                    die();
+                }
+
+                if ($param['maxtimes'] > $parent['maxtimes']) {
+                    $param['maxtimes'] = $parent['maxtimes'];
+                }
+                if ($param['maxnum'] > $parent['maxnum']) {
+                    $param['maxnum'] = $parent['maxnum'];
                 }
             }
 
