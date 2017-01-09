@@ -21,21 +21,21 @@ class User extends Base
         if (request()->isAjax()) {
             //获取一个用户信息
             $userModel = new UserModel();
-            $self      = $userModel->getOneUser(session('id'));
+            $self = $userModel->getOneUser(session('id'));
 
             if ($self['typeid'] != 1) {
                 $param = input('param.');
 
-                $limit  = $param['pageSize'];
+                $limit = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
-                $where                  = [];
+                $where = [];
                 $where['snake_user.id'] = ['in', $self['son']];
 
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['username'] = ['like', '%' . $param['searchText'] . '%'];
                 }
-                $user         = new UserModel();
+                $user = new UserModel();
                 $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
                 $status = config('user_status');
@@ -72,7 +72,7 @@ class User extends Base
                 }
 
                 $return['total'] = $user->getAllUsers($where); //总数据
-                $return['rows']  = $selectResult;
+                $return['rows'] = $selectResult;
 
                 return json($return);
 
@@ -80,14 +80,14 @@ class User extends Base
 
                 $param = input('param.');
 
-                $limit  = $param['pageSize'];
+                $limit = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
                 $where = [];
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['username'] = ['like', '%' . $param['searchText'] . '%'];
                 }
-                $user         = new UserModel();
+                $user = new UserModel();
                 $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
                 $status = config('user_status');
@@ -124,7 +124,7 @@ class User extends Base
                 }
 
                 $return['total'] = $user->getAllUsers($where); //总数据
-                $return['rows']  = $selectResult;
+                $return['rows'] = $selectResult;
 
                 return json($return);
             }
@@ -156,7 +156,7 @@ class User extends Base
             }
 
             $param['password'] = md5($param['password']);
-            $flag              = $user->insertUser($param);
+            $flag = $user->insertUser($param);
 
             if (($flag['code'] == 1) && ($flag['data'] > 0) && ($param['typeid'] != 1)) {
                 $user->getFamily($flag['data']);
@@ -166,7 +166,7 @@ class User extends Base
 
         //获取一个用户信息
         $userModel = new UserModel();
-        $self      = $userModel->getOneUser(session('id'));
+        $self = $userModel->getOneUser(session('id'));
 
         //角色
         $role = new UserType();
@@ -182,24 +182,24 @@ class User extends Base
 
         //查询所属用户
         if ($self['typeid'] == 1) {
-            $where           = [];
+            $where = [];
             $where['status'] = 1;
             $where['typeid'] = ['<>', 1];
-            $users           = $userModel->getAllUser($where);
+            $users = $userModel->getAllUser($where);
         } else {
-            $where           = [];
+            $where = [];
             $where['status'] = 1;
             $where['typeid'] = ['<>', 1];
-            $self['son']     = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
-            $where['id']     = ['in', $self['son']];
-            $users           = $userModel->getAllUser($where);
+            $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
+            $where['id'] = ['in', $self['son']];
+            $users = $userModel->getAllUser($where);
         }
 
         $this->assign([
-            'roles'  => $roles,
+            'roles' => $roles,
             'status' => config('user_status'),
-            'users'  => $users,
-            'self'   => $self,
+            'users' => $users,
+            'self' => $self,
         ]);
 
         return $this->fetch();
@@ -210,7 +210,7 @@ class User extends Base
     {
         //获取一个用户信息
         $userModel = new UserModel();
-        $self      = $userModel->getOneUser(session('id'));
+        $self = $userModel->getOneUser(session('id'));
 
         if (request()->isPost()) {
 
@@ -218,6 +218,18 @@ class User extends Base
 
             $param = input('post.');
             $param = parseParams($param['data']);
+
+            $usered = $userModel->getOneUser($param['id']);
+            if (!empty($usered['son'])) {
+                $usered['son'] .= ',' . $usered['id'];
+            } else {
+                $usered['son'] = $usered['id'];
+            }
+
+            if (preg_match('/' . $param['pid'] . '/', $usered['son'])) {
+                return json(['code' => 0, 'data' => '', 'msg' => '所属用户不能是自己或自己的下级用户']);
+                die();
+            }
 
             if ($self['typeid'] != 1) {
                 if ($param['maxtimes'] != $self['maxtimes']) {
@@ -253,7 +265,7 @@ class User extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $id   = input('param.id');
+        $id = input('param.id');
         $user = $userModel->getOneUser($id);
 
         //角色
@@ -270,25 +282,25 @@ class User extends Base
 
         //查询所属用户
         if ($self['typeid'] == 1) {
-            $where           = [];
+            $where = [];
             $where['status'] = 1;
             $where['typeid'] = ['<>', 1];
-            $users           = $userModel->getAllUser($where);
+            $users = $userModel->getAllUser($where);
         } else {
-            $where           = [];
+            $where = [];
             $where['status'] = 1;
             $where['typeid'] = ['<>', 1];
-            $self['son']     = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
-            $where['id']     = ['in', $self['son']];
-            $users           = $userModel->getAllUser($where);
+            $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
+            $where['id'] = ['in', $self['son']];
+            $users = $userModel->getAllUser($where);
         }
 
         $this->assign([
-            'roles'  => $roles,
+            'roles' => $roles,
             'status' => config('user_status'),
-            'users'  => $users,
-            'self'   => $self,
-            'user'   => $user,
+            'users' => $users,
+            'self' => $self,
+            'user' => $user,
         ]);
 
         return $this->fetch();

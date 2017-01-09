@@ -77,7 +77,7 @@
                                 <input type="hidden" class="form-control" name="pided" required="" aria-required="true" value="{$user.pid}">
                                 <select class="form-control" name="pid" id="pid" required="" aria-required="true">
 
-                                    {if condition="$user['typeid'] eq 1"}
+                                    {if condition="$self['typeid'] eq 1"}
                                     <option value="0">--顶级用户--</option>
                                     {else}
                                     <option value="0">--请选择--</option>

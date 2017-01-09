@@ -112,6 +112,17 @@ class Auth extends Base
             $param = input('post.');
             $param = parseParams($param['data']);
 
+            //所属上级不能是自己的下级
+            $noded = $node->getOneNode($param['id']);
+            $selectResult = $node->getTree($param['id']);
+            $selectResult[] = $noded;
+            foreach ($selectResult as $key => $vo) {
+                if ($param['typeid'] == $vo['id']) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '父节点不能是自己或自己的下级节点']);
+                    die();
+                }
+            }
+
             $flag = $node->editNode($param);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);

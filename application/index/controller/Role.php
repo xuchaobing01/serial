@@ -20,7 +20,7 @@ class Role extends Base
     {
         if (request()->isAjax()) {
 
-            $user         = new UserType();
+            $user = new UserType();
             $selectResult = $user->getTree();
 
             foreach ($selectResult as $key => $vo) {
@@ -30,8 +30,8 @@ class Role extends Base
                     $selectResult[$key]['operate'] = '';
                 } else {
                     $operate = [
-                        '编辑'       => url('role/roleEdit', ['id' => $vo['id']]),
-                        '删除'       => "javascript:roleDel('" . $vo['id'] . "')",
+                        '编辑' => url('role/roleEdit', ['id' => $vo['id']]),
+                        '删除' => "javascript:roleDel('" . $vo['id'] . "')",
                         '分配权限' => "javascript:giveQx('" . $vo['id'] . "')",
                     ];
                     $selectResult[$key]['operate'] = showOperate($operate);
@@ -43,7 +43,7 @@ class Role extends Base
             }
 
             $return['total'] = $user->getAllRole(); //总数据
-            $return['rows']  = $selectResult;
+            $return['rows'] = $selectResult;
 
             return json($return);
         }
@@ -65,7 +65,7 @@ class Role extends Base
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $user         = new UserType();
+        $user = new UserType();
         $selectResult = $user->getTree();
 
         foreach ($selectResult as $key => $vo) {
@@ -90,6 +90,17 @@ class Role extends Base
             $param = input('post.');
             $param = parseParams($param['data']);
 
+            //所属上级不能是自己的下级
+            $roled = $role->getOneRole($param['id']);
+            $selectResult = $role->getTree($param['id']);
+            $selectResult[] = $roled;
+            foreach ($selectResult as $key => $vo) {
+                if ($param['pid'] == $vo['id']) {
+                    return json(['code' => 0, 'data' => '', 'msg' => '上级角色不能是自己或自己的下级']);
+                    die();
+                }
+            }
+
             $flag = $role->editRole($param);
 
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
@@ -98,13 +109,12 @@ class Role extends Base
         $selectResult = $role->getTree();
 
         foreach ($selectResult as $key => $vo) {
-
             $selectResult[$key]['rolename'] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $vo['lev']) . ($vo['lev'] > 0 ? '└----' : '') . $vo['rolename'];
         }
 
         $id = input('param.id');
         $this->assign([
-            'role'  => $role->getOneRole($id),
+            'role' => $role->getOneRole($id),
             'roles' => $selectResult,
         ]);
         return $this->fetch();
@@ -131,7 +141,7 @@ class Role extends Base
     public function giveAccess()
     {
         $param = input('param.');
-        $node  = new Node();
+        $node = new Node();
         //获取现在的权限
         if ('get' == $param['type']) {
 
@@ -142,7 +152,7 @@ class Role extends Base
         if ('give' == $param['type']) {
 
             $doparam = [
-                'id'   => $param['id'],
+                'id' => $param['id'],
                 'rule' => $param['rule'],
             ];
             $user = new UserType();

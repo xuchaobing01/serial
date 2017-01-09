@@ -28,6 +28,7 @@ class UserType extends Model
         return $this->where($where)->limit($offset, $limit)->order('id desc')->select();
     }
 
+    //获取角色栏目树
     public function getTree($parent_id = 0, $lev = 0)
     {
         $tree = array();
@@ -36,8 +37,8 @@ class UserType extends Model
         foreach ($cats as $c) {
             if ($c['pid'] == $parent_id) {
                 $c['lev'] = $lev;
-                $tree[]   = $c; // 手机类型
-                $tree     = array_merge($tree, $this->getTree($c['id'], $lev + 1));
+                $tree[] = $c; // 手机类型
+                $tree = array_merge($tree, $this->getTree($c['id'], $lev + 1));
             }
         }
 
