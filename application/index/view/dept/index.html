@@ -59,8 +59,7 @@
                         <thead>
                         <th data-field="id">部门ID</th>
                         <th data-field="deptname">部门名称</th>
-                        <!-- <th data-field="maxnum">系列号默认最大生成数量</th>
-                        <th data-field="maxtimes">系列号默认最大使用次数</th> -->
+                        <th data-field="num">用户数量</th>
                         <th data-field="operate">操作</th>
                         </thead>
                     </table>
@@ -97,11 +96,10 @@
             url: "./index", //获取数据的地址
             striped: true,  //表格显示条纹
             pagination: true, //启动分页
-            //pageSize: 10,  //每页显示的记录数
+            pageSize: 10,  //每页显示的记录数
             pageSize: 10000,  //每页显示的记录数
             pageNumber:1, //当前第几页
-            //pageList: [5, 10, 15, 20, 25],  //记录数可选列表
-            pageList: [],  //记录数可选列表
+            pageList: [5, 10, 15, 20, 25],  //记录数可选列表
             sidePagination: "server", //表示服务端请求
             //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder
             //设置为limit可以获取limit, offset, search, sort, order
@@ -128,7 +126,7 @@
         initTable();
 
         //当点击查询按钮的时候执行
-        //$("#search").bind("click", initTable);
+        $("#search").bind("click", initTable);
 
     });
 

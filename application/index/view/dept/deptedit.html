@@ -44,34 +44,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">上级部门：</label>
+                            <label class="col-sm-4 control-label">用户数量：</label>
                             <div class="input-group col-sm-4">
-                                <select class="form-control" name="pid" required="" aria-required="true">
-                                    <option value="0">顶级部门</option>
-                                    {if !empty($depts)}
-                                    {foreach name="depts" item="vo"}
-                                    <option value="{$vo.id}" {if condition="$dept['pid'] eq $vo['id']"}selected {/if} >{$vo.deptname}</option>
-                                    {/foreach}
-                                    {/if}
-                                </select>
+                                {$dept.num}
                             </div>
                         </div>
 
-                        <!-- <div class="form-group">
-                            <label class="col-sm-4 control-label">系列号默认最大生成数量：</label>
-                            <div class="input-group col-sm-4">
-                                <input id="maxnum" type="number" class="form-control" name="maxnum" required="" aria-required="true" value="{$dept.maxnum}">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">系列号默认最大使用次数：</label>
-                            <div class="input-group col-sm-4">
-                                <input id="maxtimes" type="text" class="form-control" name="maxtimes" required="" aria-required="true" value="{$dept.maxtimes}" >
-                            </div>
-                        </div> -->
-
-                        
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-3">
                                 <!--<input type="button" value="提交" class="btn btn-primary" id="postform"/>-->
@@ -98,7 +76,7 @@
 <script src="/static/admin/js/plugins/suggest/bootstrap-suggest.min.js"></script>
 <script src="/static/admin/js/plugins/layer/layer.min.js"></script>
 <script type="text/javascript">
-
+    
     //表单提交
     function toVaild(){
         var jz;

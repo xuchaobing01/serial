@@ -10,7 +10,7 @@ CREATE TABLE `snake_serial` (
   `status` int(2) DEFAULT '1' COMMENT '状态1有效2失效',
   `userid` int(11) DEFAULT '0' COMMENT '用户表user的id号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('90','1TAM1K7X0DY4L','5','0','5','1483767247','1','1');
 insert into `snake_serial`(`id`,`serial`,`can_use_num`,`used_num`,`surplus_num`,`createtime`,`status`,`userid`) values('108','27QONE8MAI6RLZ','3','0','3','1483796245','1','27');

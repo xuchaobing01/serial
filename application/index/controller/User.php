@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\index\controller;
 
+use app\index\model\DeptModel;
 use app\index\model\UserModel;
 use app\index\model\UserType;
 
@@ -22,6 +23,9 @@ class User extends Base
             //获取一个用户信息
             $userModel = new UserModel();
             $self = $userModel->getOneUser(session('id'));
+
+            $deptmodel = new DeptModel();
+            $deptArr = $deptmodel->getAllDeptArr();
 
             if ($self['typeid'] != 1) {
                 $param = input('param.');
@@ -51,6 +55,12 @@ class User extends Base
 
                     if ($selectResult[$key]['pid'] != 0) {
                         $selectResult[$key]['pid'] = $user->getUserNameByUserId($selectResult[$key]['pid']);
+                    }
+
+                    if ($selectResult[$key]['deptid'] != 0) {
+                        $selectResult[$key]['deptid'] = $deptArr[$selectResult[$key]['deptid']];
+                    } else {
+                        $selectResult[$key]['deptid'] = '';
                     }
 
                     if ($vo['status'] == 1) {
@@ -103,6 +113,12 @@ class User extends Base
 
                     if ($selectResult[$key]['pid'] != 0) {
                         $selectResult[$key]['pid'] = $user->getUserNameByUserId($selectResult[$key]['pid']);
+                    }
+
+                    if ($selectResult[$key]['deptid'] != 0) {
+                        $selectResult[$key]['deptid'] = $deptArr[$selectResult[$key]['deptid']];
+                    } else {
+                        $selectResult[$key]['deptid'] = '';
                     }
 
                     if ($vo['status'] == 1) {
@@ -236,11 +252,20 @@ class User extends Base
             $users = $userModel->getAllUser($where);
         }
 
+        //查询所属用户
+        if ($self['typeid'] == 1) {
+            $deptmodel = new DeptModel();
+            $dept = $deptmodel->getAllDepts();
+        } else {
+            $dept = '';
+        }
+
         $this->assign([
             'roles' => $roles,
             'status' => config('user_status'),
             'users' => $users,
             'self' => $self,
+            'dept' => $dept,
         ]);
 
         return $this->fetch();
