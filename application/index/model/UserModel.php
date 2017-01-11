@@ -238,4 +238,9 @@ class UserModel extends Model
         return $this->field('id,username')->where($where)->order('id asc')->select();
     }
 
+    public function updateDeptByWhere($where, $deptid)
+    {
+        return $result = $this->where($where)->update(['deptid' => $deptid]);
+    }
+
 }

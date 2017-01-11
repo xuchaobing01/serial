@@ -54,7 +54,20 @@
                     <div class="form-group">
                         <label>管理员名称：</label>
                         <input type="text" class="form-control" id="username" name="username">
-                    </div>
+                    </div>&nbsp;&nbsp;
+                    {if condition="$self['typeid'] eq 1"}
+                    <div class="form-group">
+                        <label>部门名称：</label>
+                        <select class="form-control" id="deptid" name="deptid" required="" >
+                            <option value="0">--请选择--</option>
+                            {if !empty($dept)}
+                            {foreach name="dept" item="vo"}
+                            <option value="{$vo.id}">{$vo.deptname}</option>
+                            {/foreach}
+                            {/if}
+                        </select>
+                    </div>&nbsp;&nbsp;
+                    {/if}
                     <div class="form-group">
                         <button class="btn btn-primary" type="button" style="margin-top:5px" id="search"><strong>搜 索</strong>
                         </button>
@@ -124,7 +137,10 @@
                 var param = {
                     pageNumber: params.pageNumber,
                     pageSize: params.pageSize,
-                    searchText:$('#username').val()
+                    searchText:$('#username').val(),
+                    {if condition="$self['typeid'] eq 1"}
+                    deptid:$('#deptid').val()
+                    {/if}
                 };
                 return param;
             },

@@ -109,7 +109,7 @@ class DeptModel extends Model
     public function getAllDeptArr($where = "")
     {
         $dataArr = array();
-        $rs = $this->field('id,deptname')->where($where)->select();
+        $rs      = $this->field('id,deptname')->where($where)->select();
         foreach ($rs as $k => $v) {
             $dataArr[$v['id']] = $v['deptname'];
         }
@@ -119,5 +119,17 @@ class DeptModel extends Model
     {
         return $this->where($where)->select();
     }
-
+    public function updateNum($id)
+    {
+        $result = $this->where('id', $id)->setInc('num');
+    }
+    public function downNum($id)
+    {
+        $num = $this->where('id', $id)->find()['num'];
+        if ($num >= 1) {
+            $result = $this->where('id', $id)->setDec('num');
+        } else {
+            $result = $this->where('id', $id)->update(['num' => 0]);
+        }
+    }
 }

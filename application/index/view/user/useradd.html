@@ -56,10 +56,10 @@
                             </div>
                         </div>
                         
-                        {if condition="$self['typeid'] eq 1"}
                         <div class="form-group">
                             <label class="col-sm-4 control-label">所属部门：</label>
                             <div class="input-group col-sm-4">
+                                {if condition="$self['typeid'] eq 1"}
                                 <select class="form-control" id="deptid" name="deptid" required="" aria-required="true">
                                     <option value="0">--请选择--</option>
                                         {if !empty($dept)}
@@ -68,9 +68,13 @@
                                         {/foreach}
                                         {/if}
                                 </select>
+                                {else}
+                                    <input id="deptid" type="hidden" class="form-control" name="deptid" required="" aria-required="true" value="{$dept.id}" >
+                                    {$dept.deptname}
+                                {/if}
                             </div>
                         </div>
-                        {/if}
+                        
 
                         <div class="form-group">
                             <label class="col-sm-4 control-label">登录密码：</label>
@@ -167,6 +171,12 @@
                 layer.alert("请选择所属用户");
                 return false;
             }
+            {if condition="$self['typeid'] eq 1"}
+                if($("#deptid").val()<=0){
+                    layer.alert("请选择所属部门");
+                    return false;
+                }
+            {/if}
             {if condition="($self.typeid !=1)"}
                 if($("#pid").val()==0){
                     layer.alert("请选择所属用户");
@@ -178,7 +188,12 @@
                 layer.alert("超级管理员没有所属用户");
                 return false;
             }
+            if($("#deptid").val()!=0){
+                layer.alert("超级管理员没有所属部门");
+                return false;
+            }
         }
+        
 
         var jz;
         var url = "./userAdd";
