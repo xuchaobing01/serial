@@ -58,19 +58,6 @@
                         <div class="form-group">
                             <label class="col-sm-4 control-label">所属部门：</label>
                             <div class="input-group col-sm-4">
-                                <!-- {if condition="$self['typeid'] eq 1"}
-                                <input  type="hidden" class="form-control" name="olddeptid" required="" aria-required="true" value="{$user.deptid}" >
-                                <select class="form-control" id="deptid" name="deptid" required="" aria-required="true">
-                                    <option value="0">--请选择--</option>
-                                        {if !empty($dept)}
-                                        {foreach name="dept" item="vo"}
-                                        <option value="{$vo.id}" {if condition="$user['deptid'] eq $vo['id']"}selected{/if} >{$vo.deptname}</option>
-                                        {/foreach}
-                                        {/if}
-                                </select>
-                                {else}
-                                    
-                                {/if} -->
                                 {$dept.deptname}
                             </div>
                         </div>

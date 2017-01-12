@@ -8,7 +8,4 @@ CREATE TABLE `snake_dept` (
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 insert into `snake_dept`(`id`,`deptname`,`num`) values('1','北京部','0');
-insert into `snake_dept`(`id`,`deptname`,`num`) values('2','交易所A1','2');
-insert into `snake_dept`(`id`,`deptname`,`num`) values('3','交易所B','0');
-insert into `snake_dept`(`id`,`deptname`,`num`) values('4','会员单位Ad','0');
-insert into `snake_dept`(`id`,`deptname`,`num`) values('8','反对法1','0');
+insert into `snake_dept`(`id`,`deptname`,`num`) values('8','反对法1','1');
