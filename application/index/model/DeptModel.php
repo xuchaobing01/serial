@@ -132,4 +132,9 @@ class DeptModel extends Model
             $result = $this->where('id', $id)->update(['num' => 0]);
         }
     }
+    public function updateNumByNum($id, $num)
+    {
+        return $result = $this->where('id', $id)->update(['num' => $num]);
+    }
+
 }

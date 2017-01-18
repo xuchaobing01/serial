@@ -7,5 +7,5 @@ CREATE TABLE `snake_dept` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
-insert into `snake_dept`(`id`,`deptname`,`num`) values('1','北京部','0');
+insert into `snake_dept`(`id`,`deptname`,`num`) values('1','北京部','4');
 insert into `snake_dept`(`id`,`deptname`,`num`) values('8','反对法1','1');

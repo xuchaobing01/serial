@@ -55,10 +55,22 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label class="col-sm-4 control-label">所属部门：</label>
                             <div class="input-group col-sm-4">
-                                {$dept.deptname}
+                                {if condition="$self['typeid'] eq 1"}
+                                <select class="form-control" id="deptid" name="deptid" required="" aria-required="true">
+                                        <option value="0">--请选择--</option>
+                                        {if !empty($dept)}
+                                        {foreach name="dept" item="vo"}
+                                        <option value="{$vo.id}" {if condition="$user['deptid'] eq $vo['id']"}selected{/if} >{$vo.deptname}</option>
+                                        {/foreach}
+                                        {/if}
+                                </select>
+                                {else}
+                                    {$dept.deptname}
+                                {/if}
                             </div>
                         </div>
 

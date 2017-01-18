@@ -22,24 +22,24 @@ class User extends Base
         if (request()->isAjax()) {
             //获取一个用户信息
             $userModel = new UserModel();
-            $self = $userModel->getOneUser(session('id'));
+            $self      = $userModel->getOneUser(session('id'));
 
             $deptmodel = new DeptModel();
-            $deptArr = $deptmodel->getAllDeptArr();
+            $deptArr   = $deptmodel->getAllDeptArr();
 
             if ($self['typeid'] != 1) {
                 $param = input('param.');
 
-                $limit = $param['pageSize'];
+                $limit  = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
-                $where = [];
+                $where                  = [];
                 $where['snake_user.id'] = ['in', $self['son']];
 
                 if (isset($param['searchText']) && !empty($param['searchText'])) {
                     $where['username'] = ['like', '%' . $param['searchText'] . '%'];
                 }
-                $user = new UserModel();
+                $user         = new UserModel();
                 $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
                 $status = config('user_status');
@@ -82,7 +82,7 @@ class User extends Base
                 }
 
                 $return['total'] = $user->getAllUsers($where); //总数据
-                $return['rows'] = $selectResult;
+                $return['rows']  = $selectResult;
 
                 return json($return);
 
@@ -90,7 +90,7 @@ class User extends Base
 
                 $param = input('param.');
 
-                $limit = $param['pageSize'];
+                $limit  = $param['pageSize'];
                 $offset = ($param['pageNumber'] - 1) * $limit;
 
                 $where = [];
@@ -102,7 +102,7 @@ class User extends Base
                     $where['deptid'] = ['=', $param['deptid']];
                 }
 
-                $user = new UserModel();
+                $user         = new UserModel();
                 $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
                 $status = config('user_status');
@@ -145,7 +145,7 @@ class User extends Base
                 }
 
                 $return['total'] = $user->getAllUsers($where); //总数据
-                $return['rows'] = $selectResult;
+                $return['rows']  = $selectResult;
 
                 return json($return);
             }
@@ -158,7 +158,7 @@ class User extends Base
         //查询所属用户
         if ($self['typeid'] == 1) {
             $deptmodel = new DeptModel();
-            $dept = $deptmodel->getAllDepts();
+            $dept      = $deptmodel->getAllDepts();
         } else {
             $dept = "";
         }
@@ -187,9 +187,9 @@ class User extends Base
             if ($self['typeid'] != 1) {
 
                 //所属角色不能是自己的下级
-                $role = new UserType();
+                $role         = new UserType();
                 $selectResult = $role->getTree($self['typeid']);
-                $rolestatus = 1;
+                $rolestatus   = 1;
                 foreach ($selectResult as $k => $v) {
                     if ($param['typeid'] == $v['id']) {
                         $rolestatus = 2;
@@ -229,7 +229,7 @@ class User extends Base
             }
 
             $param['password'] = md5($param['password']);
-            $flag = $user->insertUser($param);
+            $flag              = $user->insertUser($param);
 
             if (($flag['code'] == 1) && ($flag['data'] > 0) && ($param['typeid'] != 1)) {
                 $user->getFamily($flag['data']);
@@ -241,7 +241,7 @@ class User extends Base
 
         //获取一个用户信息
         $userModel = new UserModel();
-        $self = $userModel->getOneUser(session('id'));
+        $self      = $userModel->getOneUser(session('id'));
 
         //角色
         $role = new UserType();
@@ -257,14 +257,14 @@ class User extends Base
 
         //查询所属用户
         if ($self['typeid'] == 1) {
-            $where = [];
+            $where           = [];
             $where['status'] = 1;
             $where['typeid'] = ['<>', 1];
             //$where['typeid'] = ['in', $idstr];
             $users = $userModel->getAllUser($where);
         } else {
             $prole = $role->getFamily($self['typeid']);
-            $ids = array();
+            $ids   = array();
             foreach ($prole as $k => $v) {
                 if (($v['id'] != 1) && ($v['id'] != $self['typeid'])) {
                     $ids[] = $v['id'];
@@ -272,13 +272,13 @@ class User extends Base
             }
             $idstr = implode(",", $ids);
 
-            $where = [];
+            $where           = [];
             $where['status'] = 1;
             //$where['typeid'] = ['<>', 1];
             $where['typeid'] = ['in', $idstr];
-            $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
-            $where['id'] = ['in', $self['son']];
-            $users = $userModel->getAllUser($where);
+            $self['son']     = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
+            $where['id']     = ['in', $self['son']];
+            $users           = $userModel->getAllUser($where);
         }
 
         $deptmodel = new DeptModel();
@@ -290,11 +290,11 @@ class User extends Base
         }
 
         $this->assign([
-            'roles' => $roles,
+            'roles'  => $roles,
             'status' => config('user_status'),
-            'users' => $users,
-            'self' => $self,
-            'dept' => $dept,
+            'users'  => $users,
+            'self'   => $self,
+            'dept'   => $dept,
         ]);
 
         return $this->fetch();
@@ -305,7 +305,7 @@ class User extends Base
     {
         //获取一个用户信息
         $userModel = new UserModel();
-        $self = $userModel->getOneUser(session('id'));
+        $self      = $userModel->getOneUser(session('id'));
 
         if (request()->isPost()) {
 
@@ -315,6 +315,8 @@ class User extends Base
             $param = parseParams($param['data']);
 
             $parent = $userModel->getOneUser($param['pid']);
+            //更新前的用户
+            $old_user = $userModel->getOneUser($param['id']);
 
             if ($self['typeid'] != 1) {
 
@@ -329,9 +331,9 @@ class User extends Base
                 }
 
                 //所属角色
-                $role = new UserType();
+                $role         = new UserType();
                 $selectResult = $role->getTree($self['typeid']);
-                $rolestatus = 1;
+                $rolestatus   = 1;
                 foreach ($selectResult as $k => $v) {
                     if ($param['typeid'] == $v['id']) {
                         $rolestatus = 2;
@@ -425,10 +427,27 @@ class User extends Base
             }
             $flag = $user->editUser($param);
 
+            if ($flag['code'] == 1 && $self['typeid'] == 1 && $old_user['deptid'] != $param['deptid']) {
+                //更新子用户的部门id
+                $where1       = array();
+                $where1['id'] = ['in', $old_user['son']];
+                $user->updateDeptByWhere($where1, $param['deptid']);
+                //更新部门的总用户数
+                $where2           = array();
+                $where2['deptid'] = $old_user['deptid'];
+                $num1             = $user->getAllUsers($where2);
+                $where3           = array();
+                $where3['deptid'] = $param['deptid'];
+                $num2             = $user->getAllUsers($where3);
+                $deptmodel        = new DeptModel();
+                $deptmodel->updateNumByNum($old_user['deptid'], $num1);
+                $deptmodel->updateNumByNum($param['deptid'], $num2);
+            }
+
             return json(['code' => $flag['code'], 'data' => $flag['data'], 'msg' => $flag['msg']]);
         }
 
-        $id = input('param.id');
+        $id   = input('param.id');
         $user = $userModel->getOneUser($id);
 
         //角色
@@ -447,7 +466,7 @@ class User extends Base
         }
 
         $prole = $role->getFamily($user['typeid']);
-        $ids = array();
+        $ids   = array();
         foreach ($prole as $k => $v) {
             if (($v['id'] != 1) && ($v['id'] != $user['typeid'])) {
                 $ids[] = $v['id'];
@@ -457,33 +476,37 @@ class User extends Base
         $idstr = implode(",", $ids);
         //查询所属用户
         if ($self['typeid'] == 1) {
-            $where = [];
+            $where           = [];
             $where['status'] = 1;
             //$where['typeid'] = [['=', $prole], ['<>', 1]];
             $where['typeid'] = ['in', $idstr];
-            $users = $userModel->getAllUser($where);
+            $users           = $userModel->getAllUser($where);
         } else {
-            $where = [];
+            $where           = [];
             $where['status'] = 1;
             //$where['typeid'] = [['=', $prole], ['<>', 1]];
             $where['typeid'] = ['in', $idstr];
-            $self['son'] = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
-            $where['id'] = ['in', $self['son']];
-            $users = $userModel->getAllUser($where);
+            $self['son']     = empty($self['son']) ? $self['id'] : $self['son'] . "," . $self['id'];
+            $where['id']     = ['in', $self['son']];
+            $users           = $userModel->getAllUser($where);
         }
 
         $deptmodel = new DeptModel();
-
-        $dept = $deptmodel->getOneDept($user['deptid']);
+        //查询所属用户
+        if ($self['typeid'] == 1) {
+            $dept = $deptmodel->getAllDepts();
+        } else {
+            $dept = $deptmodel->getOneDept($user['deptid']);
+        }
 
         $this->assign([
-            'roles' => $roles,
-            'status' => config('user_status'),
-            'users' => $users,
-            'self' => $self,
-            'user' => $user,
+            'roles'      => $roles,
+            'status'     => config('user_status'),
+            'users'      => $users,
+            'self'       => $self,
+            'user'       => $user,
             'parentrole' => $parentrole,
-            'dept' => $dept,
+            'dept'       => $dept,
         ]);
 
         return $this->fetch();
